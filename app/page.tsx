@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [data, setData] = useState("");
   useEffect(() => {
-    fetch(`${process.env.BACK_END_URL}/api/numbers/`)
+    fetch(`${process.env.NEXT_PUBLIC_BACK_END_URL}/api/numbers/`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
