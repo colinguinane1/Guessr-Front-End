@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
-import { PulseLoader } from "react-spinners";
+
+import { CgSpinner } from "react-icons/cg";
 
 export default function Home() {
   const [data, setData] = useState("");
@@ -19,18 +20,17 @@ export default function Home() {
   if (loading) {
     return (
       <div className="grid min-h-screen min-w-screen place-content-center">
-        <PulseLoader className="animate-pulse" color={"white"} />
+        <p>
+          <CgSpinner size={50} className="animate-spin " />
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="grid items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+    <div className="flex flex-col items-center justify-items-center p-4 gap-16 sm:p-20">
       {data && (
         <>
-          <h1 className="text-4xl font-bold text-center">
-            Number Game Front-End
-          </h1>
           <p>Fetched from {process.env.NEXT_PUBLIC_BACK_END_URL}</p>
           <TabGroup>
             <TabList className="flex items-center gap-4 capitalize">
