@@ -34,7 +34,7 @@ export default function Home() {
           <p>Fetched from {process.env.NEXT_PUBLIC_BACK_END_URL}</p>
           <TabGroup>
             <TabList className="flex items-center gap-4 capitalize">
-              {Object.entries(data).map(([key, value]) => (
+              {Object.entries(data).map(([key]) => (
                 <Tab
                   className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white capitalize"
                   key={key}
