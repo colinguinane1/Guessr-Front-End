@@ -1,21 +1,32 @@
 "use client";
 import { useEffect, useState } from "react";
 import { TabGroup, TabList } from "@headlessui/react";
-
 import { CgSpinner } from "react-icons/cg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export default function Home() {
-  const [data, setData] = useState("");
+  const [data, setData] = useState<{ [key: string]: number }>({});
   const [loading, setLoading] = useState(true);
   const [gameDifficulty, setGameDifficulty] = useState("easy");
   const [guess, setGuess] = useState("");
+  const [result, setResult] = useState("Blank");
+
+  const checkAnswer = (guess: number, correctAnswer: number) => {
+    if (guess === correctAnswer) {
+      setResult("Correct!");
+    } else if (guess > correctAnswer) {
+      setResult("Lower!");
+    } else if (guess < correctAnswer) {
+      setResult("Higher!");
+    }
+  };
+
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_BACK_END_URL}/api/numbers/`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        console.log("Fetched data:", data);
         setData(data);
         setLoading(false);
       });
@@ -36,8 +47,9 @@ export default function Home() {
       {data && (
         <>
           <p>Fetched from {process.env.NEXT_PUBLIC_BACK_END_URL}</p>
+
           <TabGroup>
-            <TabList className="flex items-center gap-4 capitalize">
+            <TabList className="flex flex-wrap items-center gap-4 capitalize">
               {Object.entries(data).map(([key, value]) => (
                 <Button
                   className={`flex items-center gap-2 ${
@@ -52,18 +64,24 @@ export default function Home() {
               ))}
             </TabList>
           </TabGroup>
+
           <h1>{guess}</h1>
+          <p>{result}</p>
+          <p>{data[gameDifficulty]}</p>
+
           <form
+            className="flex items-center gap-2"
             onSubmit={(e) => {
               e.preventDefault();
-              // handle form submission if needed
+              checkAnswer(Number(guess), data[gameDifficulty]);
             }}
           >
             <Input
               onChange={(e) => setGuess(e.target.value)}
               type="number"
               placeholder="Enter guess here"
-            ></Input>
+            />
+            <Button type="submit">Submit</Button>
           </form>
         </>
       )}
