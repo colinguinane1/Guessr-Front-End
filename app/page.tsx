@@ -1,12 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
+import { TabGroup, TabList } from "@headlessui/react";
 
 import { CgSpinner } from "react-icons/cg";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function Home() {
   const [data, setData] = useState("");
   const [loading, setLoading] = useState(true);
+  const [gameDifficulty, setGameDifficulty] = useState("easy");
+  const [guess, setGuess] = useState("");
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_BACK_END_URL}/api/numbers/`)
       .then((res) => res.json())
@@ -34,21 +38,33 @@ export default function Home() {
           <p>Fetched from {process.env.NEXT_PUBLIC_BACK_END_URL}</p>
           <TabGroup>
             <TabList className="flex items-center gap-4 capitalize">
-              {Object.entries(data).map(([key]) => (
-                <Tab
-                  className="rounded-full py-1 px-3 text-sm/6 font-semibold text-white focus:outline-none data-[selected]:bg-white/10 data-[hover]:bg-white/5 data-[selected]:data-[hover]:bg-white/10 data-[focus]:outline-1 data-[focus]:outline-white capitalize"
+              {Object.entries(data).map(([key, value]) => (
+                <Button
+                  className={`flex items-center gap-2 ${
+                    gameDifficulty === key && "bg-primary-foreground text-black"
+                  }`}
+                  onClick={() => setGameDifficulty(key)}
                   key={key}
                 >
                   {key}
-                </Tab>
+                  <p>({value})</p>
+                </Button>
               ))}
             </TabList>
-            <TabPanels>
-              <TabPanel>Content 1</TabPanel>
-              <TabPanel>Content 2</TabPanel>
-              <TabPanel>Content 3</TabPanel>
-            </TabPanels>
           </TabGroup>
+          <h1>{guess}</h1>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              // handle form submission if needed
+            }}
+          >
+            <Input
+              onChange={(e) => setGuess(e.target.value)}
+              type="number"
+              placeholder="Enter guess here"
+            ></Input>
+          </form>
         </>
       )}
     </div>
