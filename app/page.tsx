@@ -46,14 +46,13 @@ export default function Home() {
     <div className="flex flex-col items-center justify-items-center p-4 gap-16 sm:p-20">
       {data && (
         <>
-          <p>Fetched from {process.env.NEXT_PUBLIC_BACK_END_URL}</p>
-
           <TabGroup>
             <TabList className="flex flex-wrap items-center gap-4 capitalize">
               {Object.entries(data).map(([key, value]) => (
                 <Button
+                  variant={"outline"}
                   className={`flex items-center gap-2 ${
-                    gameDifficulty === key && "bg-primary-foreground text-black"
+                    gameDifficulty === key && "bg-primary text-black"
                   }`}
                   onClick={() => setGameDifficulty(key)}
                   key={key}
