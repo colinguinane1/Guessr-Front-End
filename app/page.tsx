@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { CgSpinner } from "react-icons/cg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CheckCircle } from "lucide-react";
 
 export default function Home() {
   const [data, setData] = useState<{
@@ -18,10 +19,21 @@ export default function Home() {
   const [guess, setGuess] = useState("");
   const [result, setResult] = useState("");
   const [guessList, setGuessList] = useState<number[]>([]); // Store guesses as numbers
+  const [currentGuessedModes, setCurrentGuessedModes] = useState<string[]>([]);
+
+  const correctGuess = (currentDifficulty: string) => {
+    if (!currentGuessedModes.includes(currentDifficulty)) {
+      const updatedGuessedModes = [...currentGuessedModes, currentDifficulty];
+      setCurrentGuessedModes(updatedGuessedModes); //
+      localStorage.setItem("modeGuessed", JSON.stringify(updatedGuessedModes));
+    }
+
+    setResult("Correct!");
+  };
 
   const checkAnswer = (guess: number, correctAnswer: number) => {
     if (guess === correctAnswer) {
-      setResult("Correct!");
+      correctGuess(gameDifficulty);
     } else if (guess > correctAnswer) {
       setResult("Lower!");
     } else if (guess < correctAnswer) {
@@ -30,6 +42,11 @@ export default function Home() {
   };
 
   useEffect(() => {
+    const storedModes = localStorage.getItem("modeGuessed");
+    if (storedModes) {
+      // Parse and set the state with the modes from localStorage
+      setCurrentGuessedModes(JSON.parse(storedModes));
+    }
     fetch(`${process.env.NEXT_PUBLIC_BACK_END_URL}/api/numbers/`)
       .then((res) => res.json())
       .then((data) => {
@@ -65,11 +82,11 @@ export default function Home() {
                 onClick={() => setGameDifficulty(key)}
                 key={key}
               >
-                {key}
+                {key} {currentGuessedModes.includes(key) && <CheckCircle />}
               </Button>
             ))}
           </div>
-          {result && <h1>{result}</h1>}
+          <p>Next number generates in: </p>
           <p>
             Guess a number between {currentDifficulty.min} -{" "}
             {currentDifficulty.max}
@@ -79,9 +96,8 @@ export default function Home() {
           <div className="flex flex-col gap-2">
             {guessList.length > 0 && (
               <div>
-                <p>Guesses:</p>
                 {guessList.map((g, idx) => (
-                  <span key={idx}>{g}, </span>
+                  <span key={idx}>{g} </span>
                 ))}
               </div>
             )}
@@ -99,14 +115,24 @@ export default function Home() {
               setGuess(""); // Reset the guess input after submission
             }}
           >
-            <Input
-              onChange={(e) => setGuess(e.target.value)}
-              type="number"
-              placeholder="Enter guess here"
-              value={guess}
-            />
-            <Button type="submit">Submit</Button>
+            {currentGuessedModes.includes(gameDifficulty) ? (
+              <div>
+                <p>You guessed the number correctly!</p>
+              </div>
+            ) : (
+              <>
+                <Input
+                  onChange={(e) => setGuess(e.target.value)}
+                  type="number"
+                  placeholder="Enter guess here"
+                  value={guess}
+                />
+
+                <Button type="submit">Submit</Button>
+              </>
+            )}
           </form>
+          {result && <h1>{result}</h1>}
         </>
       )}
     </div>
