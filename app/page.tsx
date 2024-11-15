@@ -47,7 +47,7 @@ export default function Home() {
       // Parse and set the state with the modes from localStorage
       setCurrentGuessedModes(JSON.parse(storedModes));
     }
-    fetch(`${process.env.NEXT_PUBLIC_BACK_END_URL}/api/numbers/`)
+    fetch(`${process.env.NEXT_PUBLIC_BACK_END_URL}/api/numbers/all`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched data:", data);
