@@ -7,7 +7,7 @@ export type Difficulty = {
     _id: string;
     min: number;
     max: number;
-    number: number;
+    value: number;
     attempts: number;
   };
 };
