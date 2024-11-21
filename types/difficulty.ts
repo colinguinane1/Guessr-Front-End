@@ -1,13 +1,11 @@
 export type Difficulty = {
-  [key: string]: {
-    difficulty: string;
-    created: Date;
-    expires: Date;
-    global_user_guesses: number;
-    _id: string;
-    min: number;
-    max: number;
-    value: number;
-    attempts: number;
-  };
+  _id: string;
+  difficulty: string;
+  max: number;
+  value: number;
+  attempts: number;
+  expires: string; // ISO 8601 date string
+  global_user_guesses: number;
+  created: string;
+  __v: number;
 };
