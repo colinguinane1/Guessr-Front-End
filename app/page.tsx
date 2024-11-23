@@ -63,7 +63,7 @@ export default function Home() {
   // }
 
   return (
-    <div className="flex flex-col items-center justify-items-center p-4 gap-16 sm:p-20">
+    <div className="grid place-content-center h-[80vh] w-screen">
       <Game />
     </div>
   );
