@@ -48,8 +48,4 @@ export const columns: ColumnDef<Difficulty>[] = [
             return formatDate(isoString); // Format and display the date
         },
     },
-    {
-        accessorKey: "color",
-        header: "Color",
-    },
 ]

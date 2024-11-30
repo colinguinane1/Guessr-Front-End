@@ -19,5 +19,6 @@ export default function History() {
         };
         fetchData();
     }, []);
-    return (<div className={`grid place-content-center w-screen`}><div className={`p-4 w-full`}><div className={`w-full`}><DataTable columns={columns} data={data}/></div></div></div>)
+    return (
+        <section className={`p-4`}><DataTable columns={columns} data={data}/></section>)
 }
