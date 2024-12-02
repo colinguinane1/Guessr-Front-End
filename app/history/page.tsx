@@ -3,6 +3,7 @@ import {Difficulty} from "@/types/difficulty";
 import {useEffect, useState} from "react";
 import {DataTable} from "@/app/history/data-table";
 import {columns} from "@/app/history/columns";
+import api from "@/utils/axios";
 
 export default function History() {
     const [data, setData] = useState<Difficulty[]>([])
@@ -10,9 +11,17 @@ export default function History() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACK_END_URL}/api/numbers/all`);
-                const data = await response.json();
-                setData(data);
+                const response = await api.get(`/api/numbers/all`);
+                if(!response.data){
+                    console.log("No data found");
+                    return
+                }
+                const data = response.data
+
+                // Remove the last 4 difficulties from the data array
+                const filteredData = data.slice(0, data.length - 4);
+
+                setData(filteredData);  // Set the filtered data in the state
             } catch (error) {
                 console.error("Error fetching data:", error)
             }
