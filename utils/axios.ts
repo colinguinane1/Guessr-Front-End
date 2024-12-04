@@ -1,12 +1,20 @@
-// lib/axios.ts or utils/axios.ts
+// src/utils/axios.ts
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_BACK_END_URL,  // Use an environment variable to store the base URL
+    baseURL: process.env.NEXT_PUBLIC_BACK_END_URL,
     headers: {
         'Content-Type': 'application/json',
-        // Add other global headers if needed
-    }
+    },
 });
+
+
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+}, (error) => Promise.reject(error));
 
 export default api;
