@@ -44,7 +44,7 @@ export default function Login() {
   return (
     <section className="flex flex-col items-center justify-center h-[calc(100vh-100px)]">
       <form
-        className="w-full max-w-md flex  flex-col gap-4"
+        className="w-full p-4 max-w-md flex  flex-col gap-4"
         onSubmit={handleSubmit}
       >
         <h1 className="text-2xl font-bold">Login</h1>

@@ -1,6 +1,7 @@
 "use client";
 import api from "@/utils/axios";
 import { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 
 interface User {
   userId: string;
@@ -37,19 +38,26 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const fetchUserData = async (token: string) => {
     try {
+      console.log("Fetching user data with token:", token);
       const response = await api.get("/api/auth/user", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!response) {
-        console.error("No response from server");
+      if (!response.data) {
+        console.error("No user data in response");
         return;
       }
+      console.log("Received user data:", response.data);
       setUser(response.data);
     } catch (error) {
       console.error("Error fetching user data:", error);
-      localStorage.removeItem("token");
+      if (
+        axios.isAxiosError(error) &&
+        (error.response?.status === 401 || error.response?.status === 403)
+      ) {
+        localStorage.removeItem("token");
+      }
     }
   };
 
