@@ -44,7 +44,7 @@ export default function Register() {
   return (
     <section className="flex flex-col items-center justify-center h-[calc(100vh-100px)]">
       <form
-        className="w-full max-w-md flex  flex-col gap-4"
+        className="w-full max-w-md flex p-4  flex-col gap-4"
         onSubmit={handleSubmit}
       >
         <h1 className="text-2xl font-bold">Register</h1>
