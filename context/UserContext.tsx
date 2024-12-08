@@ -4,9 +4,9 @@ import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 interface User {
-  userId: string;
+  _id: string;
   email: string;
-  username?: string;
+  username: string;
 }
 
 interface UserContextType {

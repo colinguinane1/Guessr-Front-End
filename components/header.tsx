@@ -4,6 +4,7 @@ import { ModeToggle } from "./ui/theme-switcher";
 import { Button } from "./ui/button";
 import { useUser } from "@/context/UserContext";
 import LogoutButton from "./LogOutButton";
+import UserIcon from "./user-icon";
 export default function Header() {
   const Navigation = [
     { name: "Play", href: "/" },
@@ -15,26 +16,20 @@ export default function Header() {
   const loggedIn = user !== null;
 
   return (
-    <header className="w-screen border-b">
+    <header className="w-screen shadow-sm border-b">
       <section className="w-full p-4 flex  items-center justify-between">
-        <div>
+        <div className="flex items-center gap-2">
           <p className="font-extrabold">Numby</p>
-        </div>
-        <div className=" flex items-center gap-4">
           <ModeToggle />
+        </div>
+        <div className=" flex items-center hidden md:flex gap-4">
           {Navigation.map((nav) => (
             <Link href={nav.href} className="" key={nav.name}>
               {nav.name}
             </Link>
           ))}
-          {loggedIn ? (
-            <LogoutButton />
-          ) : (
-            <Link href="/register">
-              <Button className="font-bold">Login</Button>
-            </Link>
-          )}
-        </div>
+        </div>{" "}
+        <UserIcon />
       </section>
     </header>
   );

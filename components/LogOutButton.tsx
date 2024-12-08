@@ -9,7 +9,7 @@ const LogoutButton = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser(null);
-    router.push("/login");
+    router.push("/");
   };
 
   return <Button onClick={handleLogout}>Logout</Button>;
