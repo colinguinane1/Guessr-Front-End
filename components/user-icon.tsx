@@ -5,6 +5,7 @@ import {
   ModalContent,
 } from "@/components/ui/modal-drawer";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { CiLogout } from "react-icons/ci";
 import { useUser } from "@/context/UserContext";
 import LogOutButton from "@/components/LogOutButton";
 import { CiSettings } from "react-icons/ci";
@@ -12,6 +13,7 @@ import Login from "@/components/login";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useMediaQuery } from "@/utils/media-query";
+import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -20,8 +22,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function UserIcon() {
-  const { user } = useUser();
+  const router = useRouter();
+  const { user, setUser } = useUser();
   const isdesktop = useMediaQuery("(min-width: 768px)");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    router.push("/");
+  };
 
   if (!user) {
     return (
@@ -47,13 +56,17 @@ export default function UserIcon() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="flex flex-col gap-2">
         <DropdownMenuItem className="flex items-center gap-2">
-          <Link className="flex items-center" href="/account">
+          <Link className="flex items-center gap-1" href="/account">
             {" "}
-            <CiSettings /> Account
+            <CiSettings size={20} /> Account
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem className="mt-auto">
-          <LogOutButton />
+        <DropdownMenuItem
+          onClick={() => handleLogout()}
+          className="mt-auto cursor-pointer"
+        >
+          <CiLogout color="red" size={20} />
+          <p className="text-red-500">Logout</p>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -67,14 +80,14 @@ export default function UserIcon() {
         </Avatar>
       </ModalTrigger>
       <ModalContent>
-        <div className="flex justify-between flex-col h-full p-4">
-          <Link className="flex items-center" href="/account">
+        <div className="flex justify-between gap-4 flex-col h-full p-4">
+          <Link className="flex items-center gap-1" href="/account">
             {" "}
-            <CiSettings /> Account
+            <CiSettings size={15} /> Account
           </Link>
-          <div className="mt-20 flex justify-between">
-            <div></div>
-            <LogOutButton />
+          <div className="mb-20 cursor-pointer items-center flex gap-1 ">
+            <CiLogout color="red" size={15} />
+            <p className="text-red-500">Logout</p>
           </div>
         </div>
       </ModalContent>
