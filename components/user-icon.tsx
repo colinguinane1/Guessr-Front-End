@@ -85,7 +85,7 @@ export default function UserIcon() {
             {" "}
             <CiSettings size={15} /> Account
           </Link>
-          <div className="mb-20 cursor-pointer items-center flex gap-1 ">
+          <div   onClick={() => handleLogout()} className="mb-20 cursor-pointer items-center flex gap-1 ">
             <CiLogout color="red" size={15} />
             <p className="text-red-500">Logout</p>
           </div>
