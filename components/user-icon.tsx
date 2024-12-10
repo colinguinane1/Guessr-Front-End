@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useMediaQuery } from "@/utils/media-query";
 import { useRouter } from "next/navigation";
+import { CiUser } from "react-icons/ci";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -35,8 +36,9 @@ export default function UserIcon() {
   if (!user) {
     return (
       <ModalRoot>
-        <ModalTrigger>
-          <Button>Log In</Button>
+        <ModalTrigger className="flex items-center gap-1 px-2">
+          <CiUser size={20} />
+          <p className="text-sm hidden md:block">Login</p>
         </ModalTrigger>
         <ModalContent>
           <Login />
@@ -47,8 +49,8 @@ export default function UserIcon() {
 
   return isdesktop ? (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Avatar>
+      <DropdownMenuTrigger className="cursor-pointer p-0">
+        <Avatar className="cursor-pointer p-1">
           <AvatarFallback>
             {user.username.slice(0, 2).toUpperCase()}
           </AvatarFallback>
