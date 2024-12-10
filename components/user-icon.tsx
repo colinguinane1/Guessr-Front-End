@@ -46,7 +46,6 @@ export default function UserIcon() {
       </ModalRoot>
     );
   }
-
   return (
     <Link href="/account" className="flex px-2 items-center gap-1">
       <Avatar className="cursor-pointer p-1">
