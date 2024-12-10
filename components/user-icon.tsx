@@ -36,7 +36,7 @@ export default function UserIcon() {
   if (!user) {
     return (
       <ModalRoot>
-        <ModalTrigger className="flex items-center gap-1 px-2">
+        <ModalTrigger className="px-2 flex items-center gap-1">
           <CiUser size={20} />
           <p className="text-sm hidden md:block">Login</p>
         </ModalTrigger>

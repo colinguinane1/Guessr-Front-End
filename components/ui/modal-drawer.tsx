@@ -10,6 +10,7 @@ import {
   DrawerTrigger,
   DrawerClose,
 } from "@/components/ui/drawer";
+import { cn } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -21,7 +22,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { useMediaQuery } from "@/utils/media-query";
- 
+
 export const ModalRoot = ({ children }: { children: React.ReactNode }) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   if (isDesktop) {
@@ -30,16 +31,30 @@ export const ModalRoot = ({ children }: { children: React.ReactNode }) => {
     return <Drawer>{children}</Drawer>;
   }
 };
- 
-export const ModalTrigger = ({ children }: { children: React.ReactNode }) => {
+
+export const ModalTrigger = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
   const isdesktop = useMediaQuery("(min-width: 768px)");
   if (isdesktop) {
-    return <DialogTrigger className="w-fit">{children}</DialogTrigger>;
+    return (
+      <DialogTrigger className={cn("w-fit", className)}>
+        {children}
+      </DialogTrigger>
+    );
   } else {
-    return <DrawerTrigger className="w-fit">{children}</DrawerTrigger>;
+    return (
+      <DrawerTrigger className={cn("w-fit", className)}>
+        {children}
+      </DrawerTrigger>
+    );
   }
 };
- 
+
 export const ModalContent = ({ children }: { children: React.ReactNode }) => {
   const isdesktop = useMediaQuery("(min-width: 768px)");
   if (isdesktop) {
@@ -48,7 +63,7 @@ export const ModalContent = ({ children }: { children: React.ReactNode }) => {
     return <DrawerContent>{children}</DrawerContent>;
   }
 };
- 
+
 export const ModalHeader = ({ children }: { children: React.ReactNode }) => {
   const isdesktop = useMediaQuery("(min-width: 768px)");
   if (isdesktop) {
@@ -57,7 +72,7 @@ export const ModalHeader = ({ children }: { children: React.ReactNode }) => {
     return <DrawerHeader className="text-left">{children}</DrawerHeader>;
   }
 };
- 
+
 export const ModalFooter = ({ children }: { children: React.ReactNode }) => {
   const isdesktop = useMediaQuery("(min-width: 768px)");
   if (isdesktop) {
@@ -66,7 +81,7 @@ export const ModalFooter = ({ children }: { children: React.ReactNode }) => {
     return <DrawerFooter>{children}</DrawerFooter>;
   }
 };
- 
+
 export const ModalTitle = ({ children }: { children: React.ReactNode }) => {
   const isdesktop = useMediaQuery("(min-width: 768px)");
   if (isdesktop) {
@@ -75,7 +90,7 @@ export const ModalTitle = ({ children }: { children: React.ReactNode }) => {
     return <DrawerTitle>{children}</DrawerTitle>;
   }
 };
- 
+
 export const ModalDescription = ({
   children,
 }: {
@@ -88,7 +103,7 @@ export const ModalDescription = ({
     return <DrawerDescription>{children}</DrawerDescription>;
   }
 };
- 
+
 export const ModalClose = ({ children }: { children: React.ReactNode }) => {
   const isdesktop = useMediaQuery("(min-width: 768px)");
   if (isdesktop) {

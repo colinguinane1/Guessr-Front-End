@@ -23,11 +23,12 @@ export default function Header() {
   ];
   const [currentTab, setCurrentTab] = useState(0);
   const [tabWidths, setTabWidths] = useState<number[]>([]);
-  const tabRefs = Navigation.map(() => useRef<HTMLAnchorElement>(null));
+
+  const tabsRef = useRef<(HTMLAnchorElement | null)[]>([]);
   const GAP_SIZE = 4;
 
   useEffect(() => {
-    const widths = tabRefs.map((ref) => ref.current?.offsetWidth || 0);
+    const widths = tabsRef.current.map((ref) => ref?.offsetWidth || 0);
     setTabWidths(widths);
   }, []);
 
@@ -48,7 +49,9 @@ export default function Header() {
         <div className="items-center justify-center border relative rounded-full bg-secondary/20 backdrop-blur-sm flex gap-1">
           {Navigation.map((nav, index) => (
             <Link
-              ref={tabRefs[index]}
+              ref={(el) => {
+                tabsRef.current[index] = el;
+              }}
               href={nav.href}
               onClick={() => setCurrentTab(index)}
               className="flex items-center gap-1 p-2 px-4 rounded-full relative z-10"
