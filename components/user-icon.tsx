@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useMediaQuery } from "@/utils/media-query";
 import { useRouter } from "next/navigation";
+import { CiUser } from "react-icons/ci";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -35,8 +36,9 @@ export default function UserIcon() {
   if (!user) {
     return (
       <ModalRoot>
-        <ModalTrigger>
-          <Button>Log In</Button>
+        <ModalTrigger className="px-2 flex items-center gap-1">
+          <CiUser size={20} />
+          <p className="text-sm hidden md:block">Login</p>
         </ModalTrigger>
         <ModalContent>
           <Login />
@@ -44,53 +46,14 @@ export default function UserIcon() {
       </ModalRoot>
     );
   }
-
-  return isdesktop ? (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Avatar>
-          <AvatarFallback>
-            {user.username.slice(0, 2).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="flex flex-col gap-2">
-        <DropdownMenuItem className="flex items-center gap-2">
-          <Link className="flex items-center gap-1" href="/account">
-            {" "}
-            <CiSettings size={20} /> Account
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => handleLogout()}
-          className="mt-auto cursor-pointer"
-        >
-          <CiLogout color="red" size={20} />
-          <p className="text-red-500">Logout</p>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  ) : (
-    <ModalRoot>
-      <ModalTrigger>
-        <Avatar>
-          <AvatarFallback>
-            {user.username.slice(0, 2).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      </ModalTrigger>
-      <ModalContent>
-        <div className="flex justify-between gap-4 flex-col h-full p-4">
-          <Link className="flex items-center gap-1" href="/account">
-            {" "}
-            <CiSettings size={15} /> Account
-          </Link>
-          <div   onClick={() => handleLogout()} className="mb-20 cursor-pointer items-center flex gap-1 ">
-            <CiLogout color="red" size={15} />
-            <p className="text-red-500">Logout</p>
-          </div>
-        </div>
-      </ModalContent>
-    </ModalRoot>
+  return (
+    <Link href="/account" className="flex px-2 items-center gap-1">
+      <Avatar className="cursor-pointer p-1">
+        <AvatarFallback>
+          {user.username.slice(0, 2).toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
+      <p className="text-sm hidden md:block">Account</p>
+    </Link>
   );
 }

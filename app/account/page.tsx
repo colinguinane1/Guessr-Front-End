@@ -1,9 +1,10 @@
 "use client";
 import { useUser } from "@/context/UserContext"; // Import the useUser hook
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { PulseLoader } from "react-spinners";
 
-const UserProfile = () => {
+import { PulseLoader } from "react-spinners";
+import LogOutButton from "@/components/LogOutButton";
+export default function UserProfile() {
   const { user } = useUser(); // Access the user data from the context
 
   if (!user) {
@@ -30,8 +31,7 @@ const UserProfile = () => {
       </h1>
       <p>ID: {user._id}</p>
       <p>Email: {user.email}</p>
+      <LogOutButton />
     </div>
   );
-};
-
-export default UserProfile;
+}
