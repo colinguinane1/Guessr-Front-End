@@ -69,15 +69,12 @@ export default function Header() {
             }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
           />
-          <Button
-            variant="ghost"
+          <div
+            className="flex items-center gap-1"
             onClick={() => setCurrentTab(4)}
-            className={`flex items-center hover:bg-secondary/70 gap-1 p-2 rounded-full ${
-              currentTab === 4 && "bg-secondary/70"
-            }`}
           >
             <UserIcon />
-          </Button>
+          </div>
         </div>{" "}
         <div></div>
         {/* <UserIcon /> */}
