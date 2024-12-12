@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import FlickeringGrid from "@/components/ui/flickering-grid";
 import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { UserProvider } from "@/context/UserContext";
+import BackgroundGrid from "@/components/bg-grid";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -39,14 +39,7 @@ export default function RootLayout({
           <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased font-[family-name:var(--font-geist-sans)]`}
           >
-          <FlickeringGrid
-              className="z-0 absolute [mask-image:radial-gradient(450px_circle_at_center,white,transparent)]"
-              squareSize={1}
-              gridGap={16}
-              color="#ffffff"
-              maxOpacity={0.2}
-              flickerChance={0.1}
-          />
+       <BackgroundGrid/>
             {" "}
             <Header />
             <div className="p-4 z-[1]">{children}</div>
