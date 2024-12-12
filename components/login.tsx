@@ -27,7 +27,6 @@ export default function Login() {
         });
         localStorage.setItem("token", response.data.token);
         setUser(response.data.user);
-        window.location.href = "/account";
       } catch (err) {
         const error = err as AxiosError<{ message: string }>;
         setError(
@@ -47,7 +46,6 @@ export default function Login() {
         localStorage.setItem("token", response.data.token);
         console.log("User data:", response.data.user);
         setUser(response.data.user);
-        window.location.href = "/account";
       } catch (err) {
         const error = err as AxiosError<{ message: string }>;
         console.error("Registration error details:", error.response?.data);

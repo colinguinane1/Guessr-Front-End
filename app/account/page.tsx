@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Login from "@/components/login";
 import { Drawer } from "vaul";
 import LogOutButton from "@/components/LogOutButton";
+import { ModeToggle } from "@/components/ui/theme-switcher";
 export default function UserProfile() {
   const { user } = useUser(); // Access the user data from the context
 
@@ -47,6 +48,7 @@ export default function UserProfile() {
       <p>ID: {user._id}</p>
       <p>Email: {user.email}</p>
       <LogOutButton />
+      <ModeToggle />
     </div>
   );
 }

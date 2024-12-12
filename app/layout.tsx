@@ -30,18 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <UserProvider>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased font-[family-name:var(--font-geist-sans)]`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased font-[family-name:var(--font-geist-sans)] transition-colors duration-300`}
           >
-       <BackgroundGrid/>
-            {" "}
-            <Header />
+            <BackgroundGrid /> <Header />
             <div className="p-4 z-[1]">{children}</div>
           </body>
         </ThemeProvider>
