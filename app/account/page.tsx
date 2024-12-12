@@ -1,21 +1,36 @@
 "use client";
 import { useUser } from "@/context/UserContext"; // Import the useUser hook
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-
-import { PulseLoader } from "react-spinners";
+import Login from "@/components/login";
+import { Drawer } from "vaul";
 import LogOutButton from "@/components/LogOutButton";
 export default function UserProfile() {
   const { user } = useUser(); // Access the user data from the context
 
   if (!user) {
     return (
-      <div className="grid place-content-center animate-pulse h-[calc(100vh-100px)]">
-        <div className="flex justify-center items-center gap-2">
-          <PulseLoader size={8} />
-          <p>Loading...</p>
-        </div>
-      </div>
-    ); // Or handle the case when the user is not logged in
+      <Drawer.Root modal={false} open={true}>
+        <Drawer.Trigger className="relative flex px-3"></Drawer.Trigger>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
+          <Drawer.Content
+            className="fixed bottom-20  outline-none w-screen "
+            // The gap between the edge of the screen and the drawer is 8px in this case.
+            style={
+              {
+                "--initial-transform": "calc(100% + 8px)",
+              } as React.CSSProperties
+            }
+          >
+            <div className="flex flex-col p-4 w-full items-center justify-center rounded-[16px]">
+              <div className="max-w-[500px] rounded-xl w-full  p-4 border">
+                <Login />
+              </div>
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+    );
   }
 
   return (
