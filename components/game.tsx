@@ -4,12 +4,14 @@ import { Button } from "./ui/button";
 // import { Input } from "./ui/input";
 import { BsArrowRepeat } from "react-icons/bs";
 import { Difficulty } from "@/types/difficulty";
-import { SkullIcon } from "lucide-react";
+import { Check, SkullIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import api from "@/utils/axios";
+import { useUser } from "@/context/UserContext";
 
 export default function Game() {
   const [data, setData] = useState<Difficulty[]>([]); // Initialize as an empty object
+
   const [loading, setLoading] = useState(true);
   const [currentMode, setCurrentMode] = useState<string>("easy");
   const [modeWin, setModeWin] = useState(false);
@@ -19,6 +21,7 @@ export default function Game() {
 
   const [currentAttempts, setCurrentAttempts] = useState<number>(4);
   const [timeRemaining, setTimeRemaining] = useState(0);
+  const { user } = useUser();
 
   const selectedDifficulty =
     data.find((difficulty) => difficulty.difficulty === currentMode) || data[0];
@@ -188,6 +191,12 @@ export default function Game() {
     parseWins.completed = true;
     setModeWin(true);
     localStorage.setItem(currentMode, JSON.stringify(parseWins));
+    const res = api.post("/api/numbers/correct-guess", {
+      numberId: currentNumberId,
+      userId: "1234",
+    });
+
+    console.log(res);
   };
 
   const checkWin = () => {
@@ -209,6 +218,7 @@ export default function Game() {
     setCurrentAttempts((prevAttempts) => prevAttempts - 1);
     const res = await api.post("/api/numbers/add-guess", {
       numberId: currentNumberId,
+      userId: user?._id,
     });
     console.log(res);
   };
@@ -247,42 +257,47 @@ export default function Game() {
 
   return (
     <div className="grid place-content-center h-screen p-4">
-      <h1 className="text-3xl font-extrabold text-white mb-8">Play</h1>
+      <h1 className="text-3xl font-extrabold  mb-8">Play</h1>
 
       {/* Difficulty Buttons */}
       <div className="flex flex-wrap gap-4 justify-center mb-8">
         {Object.values(data).map((difficulty) => (
-            <>
-          <Button
-            variant="outline"
-            onClick={() => changeDifficulty(difficulty.difficulty)}
-            className={`capitalize  relative transition-all duration-300 ease-in-out transform hover:scale-105 ${
-              currentMode === difficulty.difficulty &&
-              "bg-secondary text-primary hover:bg-primary-foreground"
-            }`}
-            style={{
-              color: difficulty.color,
-
-            }}
-            key={difficulty._id}
-          >
-         {difficulty.difficulty}
-          </Button>
-
-    </>
+          <>
+            <Button
+              variant="outline"
+              onClick={() => changeDifficulty(difficulty.difficulty)}
+              className={`capitalize  relative transition-all duration-300 ease-in-out transform hover:scale-105 ${
+                currentMode === difficulty.difficulty &&
+                "bg-secondary text-primary hover:bg-primary-foreground"
+              }`}
+              style={{
+                color: difficulty.color,
+              }}
+              key={difficulty._id}
+            >
+              {difficulty.difficulty}
+            </Button>
+          </>
         ))}
       </div>
 
       {/* Lives Counter */}
-      <div className="flex items-center justify-between gap-6 w-full mb-4 text-lg text-white">
-        <p className="flex items-center gap-2">
-          <SkullIcon size={15} />
-          {currentAttempts} lives left
-        </p>
+      <div className="flex items-center justify-between gap-6 w-full mb-4 text-lg ">
+        {modeWin ? (
+          <p className="flex text-green-500 items-center gap-2">
+            <Check size={15} />
+            You guessed this number correctly!
+          </p>
+        ) : (
+          <p className="flex items-center gap-2">
+            <SkullIcon size={15} />
+            {currentAttempts} lives left
+          </p>
+        )}
       </div>
 
       {/* Countdown Timer */}
-      <p className="flex items-center gap-2 text-white/70 mb-8 text-sm">
+      <p className="flex items-center gap-2 text-primary/70 mb-8 text-sm">
         <BsArrowRepeat />
         {hours}:{minutes}:{seconds} until numbers regenerate...
       </p>
@@ -298,31 +313,31 @@ export default function Game() {
             Out of lives...
           </p>
         ) : (
-            <form
-                onSubmit={handleSubmit(guess)}
-                className="flex items-center z-10 justify-center flex-col gap-2"
+          <form
+            onSubmit={handleSubmit(guess)}
+            className="flex items-center z-10 justify-center flex-col gap-2"
+          >
+            <Input
+              className={`bg-transparent border p-4 w-full outline-none  font-extrabold tracking-tighter`}
+              placeholder={`1-${selectedDifficulty?.max}`}
+              disabled={currentAttempts <= 0}
+              id="guess"
+              value={guess}
+              onChange={(e) => setGuess(e.target.value)}
+            />
+            <Button
+              className={`w-full font-extrabold hover:bg-none tracking-tighter ${
+                result === "Higher..." && "bg-yellow-500"
+              } ${result === "Lower..." && "bg-yellow-500"} ${
+                result === "Correct!" || (modeWin && "bg-green-500")
+              }`}
+              disabled={modeWin}
+              variant={currentAttempts <= 0 ? "destructive" : "default"}
+              type="submit"
             >
-              <Input
-                  className={`bg-transparent border p-4 w-full outline-none  font-extrabold tracking-tighter`}
-                  placeholder={`1-${selectedDifficulty?.max}`}
-                  disabled={currentAttempts <= 0}
-                  id="guess"
-                  value={guess}
-                  onChange={(e) => setGuess(e.target.value)}
-              />
-              <Button
-                  className={`w-full font-extrabold hover:bg-none tracking-tighter ${
-                      result === "Higher..." && "bg-yellow-500"
-                  } ${result === "Lower..." && "bg-yellow-500"} ${
-                      result === "Correct!" || (modeWin && "bg-green-500")
-                  }`}
-                  disabled={modeWin}
-                  variant={currentAttempts <= 0 ? "destructive" : "default"}
-                  type="submit"
-              >
-                {result}
-              </Button>
-            </form>
+              {result}
+            </Button>
+          </form>
         )}
       </div>
     </div>

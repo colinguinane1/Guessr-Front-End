@@ -5,9 +5,9 @@ import { IoHome } from "react-icons/io5";
 import { GoHistory } from "react-icons/go";
 import { useState, useEffect, useRef } from "react";
 import { CiUser } from "react-icons/ci";
-import { useUser } from "@/context/UserContext"
+import { useUser } from "@/context/UserContext";
 import { motion } from "framer-motion";
-import {AvatarFallback, Avatar} from "@/components/ui/avatar";
+import { AvatarFallback, Avatar } from "@/components/ui/avatar";
 
 export default function Header() {
   const { user } = useUser();
@@ -19,13 +19,22 @@ export default function Header() {
       href: "/leaderboard",
       icon: <MdLeaderboard size={20} />,
     },
-    { name: user ? "Profile" : "Login", href: "/account", icon: user ?  <Avatar className="w-6 h-6">
-        <AvatarFallback className="w-6 h-6 text-xs">
-          {user.username.slice(0, 2).toUpperCase()}
-        </AvatarFallback>
-      </Avatar> : <CiUser size={20} />  },
+    {
+      name: user ? "User" : "Login",
+      href: "/account",
+      icon: user ? (
+        <Avatar className="w-6 h-6">
+          <AvatarFallback className="w-6 h-6 text-xs">
+            {user.username.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+      ) : (
+        <CiUser size={20} />
+      ),
+    },
   ];
   const [currentTab, setCurrentTab] = useState(0);
+  const [hoveredTab, setHoveredTab] = useState(0);
   const [tabWidths, setTabWidths] = useState<number[]>([]);
 
   const tabsRef = useRef<(HTMLAnchorElement | HTMLDivElement | null)[]>([]);
@@ -57,8 +66,11 @@ export default function Header() {
                 tabsRef.current[index] = el;
               }}
               href={nav.href}
+              onMouseEnter={() => setHoveredTab(index)}
               onClick={() => setCurrentTab(index)}
-              className="flex items-center gap-1 p-2 px-4 rounded-full relative z-10"
+              className={`flex items-center gap-1 p-2 px-4 rounded-full relative z-10 hover:text-primary transition-all duration-300 ${
+                index === currentTab ? "text-primary" : "text-primary/50"
+              }`}
               key={nav.name}
             >
               {nav.icon}
@@ -72,16 +84,15 @@ export default function Header() {
               x: getTabOffset(currentTab),
             }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          />{" "}
-          {/* <div
-            ref={(el) => {
-              tabsRef.current[3] = el;
+          />
+          <motion.div
+            className="absolute inset-0 bg-secondary/40 rounded-full z-0"
+            animate={{
+              width: tabWidths[hoveredTab],
+              x: getTabOffset(hoveredTab),
             }}
-            className="flex items-center gap-1"
-            onClick={() => setCurrentTab(3)}
-          >
-            <UserIcon />
-          </div> */}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          />
         </div>{" "}
         <div></div>
         {/* <UserIcon /> */}
