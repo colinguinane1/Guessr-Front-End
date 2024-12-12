@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { UserProvider } from "@/context/UserContext";
+import BackgroundGrid from "@/components/bg-grid";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,9 +39,10 @@ export default function RootLayout({
           <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased font-[family-name:var(--font-geist-sans)]`}
           >
+       <BackgroundGrid/>
             {" "}
             <Header />
-            {children}
+            <div className="p-4 z-[1]">{children}</div>
           </body>
         </ThemeProvider>
       </UserProvider>

@@ -246,71 +246,83 @@ export default function Game() {
   }
 
   return (
-    <div className="space-y-20">
-      <div className="flex flex-wrap gap-2">
+    <div className="grid place-content-center h-screen p-4">
+      <h1 className="text-3xl font-extrabold text-white mb-8">Play</h1>
+
+      {/* Difficulty Buttons */}
+      <div className="flex flex-wrap gap-4 justify-center mb-8">
         {Object.values(data).map((difficulty) => (
+            <>
           <Button
-            variant={"outline"}
+            variant="outline"
             onClick={() => changeDifficulty(difficulty.difficulty)}
-            className={`capitalize border ${
+            className={`capitalize  relative transition-all duration-300 ease-in-out transform hover:scale-105 ${
               currentMode === difficulty.difficulty &&
               "bg-secondary text-primary hover:bg-primary-foreground"
             }`}
-            style={{ borderColor: difficulty.color }}
+            style={{
+              color: difficulty.color,
+
+            }}
             key={difficulty._id}
           >
-            {difficulty.difficulty}
+         {difficulty.difficulty}
           </Button>
+
+    </>
         ))}
       </div>
-      <div className={`flex items-center justify-between gap-6 w-full`}>
-        <p className={`flex items-center gap-2`}>
-          {" "}
+
+      {/* Lives Counter */}
+      <div className="flex items-center justify-between gap-6 w-full mb-4 text-lg text-white">
+        <p className="flex items-center gap-2">
           <SkullIcon size={15} />
-          {currentAttempts} lives
+          {currentAttempts} lives left
         </p>
       </div>
-      <p className={`flex items-center gap-2 text-primary/50`}>
+
+      {/* Countdown Timer */}
+      <p className="flex items-center gap-2 text-white/70 mb-8 text-sm">
         <BsArrowRepeat />
-        {hours}:{minutes}:{seconds} til numbers regenerate..
+        {hours}:{minutes}:{seconds} until numbers regenerate...
       </p>
 
-      <p className={`text-destructive`}>{error}</p>
+      {/* Error Message */}
+      <p className="text-destructive mb-6">{error}</p>
 
-      <div className={`flex items-center w-full justify-center`}>
+      {/* Out of Lives or Guess Form */}
+      <div className="flex items-center w-full justify-center">
         {currentAttempts <= 0 ? (
-          <p
-            className={`font-extrabold text-destructive text-4xl tracking-tighter flex gap-2 items-center`}
-          >
+          <p className="font-extrabold text-destructive text-4xl tracking-tighter flex gap-2 items-center">
             <SkullIcon />
             Out of lives...
           </p>
         ) : (
-          <form
-            onSubmit={handleSubmit(guess)}
-            className="flex items-center justify-center flex-col gap-2"
-          >
-            <Input
-              className={`bg-transparent border p-4 w-full outline-none  font-extrabold tracking-tighter`}
-              placeholder={`1-${selectedDifficulty?.max}`}
-              disabled={currentAttempts <= 0}
-              id="guess"
-              value={guess}
-              onChange={(e) => setGuess(e.target.value)}
-            />
-            <Button
-              className={`w-full font-extrabold hover:bg-none tracking-tighter ${
-                result === "Higher..." && "bg-yellow-500"
-              } ${result === "Lower..." && "bg-yellow-500"} ${
-                result === "Correct!" || (modeWin && "bg-green-500")
-              }`}
-              disabled={modeWin}
-              variant={currentAttempts <= 0 ? "destructive" : "default"}
-              type="submit"
+            <form
+                onSubmit={handleSubmit(guess)}
+                className="flex items-center z-10 justify-center flex-col gap-2"
             >
-              {result}
-            </Button>
-          </form>
+              <Input
+                  className={`bg-transparent border p-4 w-full outline-none  font-extrabold tracking-tighter`}
+                  placeholder={`1-${selectedDifficulty?.max}`}
+                  disabled={currentAttempts <= 0}
+                  id="guess"
+                  value={guess}
+                  onChange={(e) => setGuess(e.target.value)}
+              />
+              <Button
+                  className={`w-full font-extrabold hover:bg-none tracking-tighter ${
+                      result === "Higher..." && "bg-yellow-500"
+                  } ${result === "Lower..." && "bg-yellow-500"} ${
+                      result === "Correct!" || (modeWin && "bg-green-500")
+                  }`}
+                  disabled={modeWin}
+                  variant={currentAttempts <= 0 ? "destructive" : "default"}
+                  type="submit"
+              >
+                {result}
+              </Button>
+            </form>
         )}
       </div>
     </div>

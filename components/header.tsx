@@ -1,17 +1,16 @@
 "use client";
 import Link from "next/link";
-import { ModeToggle } from "./ui/theme-switcher";
-import UserIcon from "./user-icon";
-import Image from "next/image";
 import { MdLeaderboard } from "react-icons/md";
 import { IoHome } from "react-icons/io5";
 import { GoHistory } from "react-icons/go";
 import { useState, useEffect, useRef } from "react";
 import { CiUser } from "react-icons/ci";
-import { Button } from "./ui/button";
+import { useUser } from "@/context/UserContext"
 import { motion } from "framer-motion";
+import {AvatarFallback, Avatar} from "@/components/ui/avatar";
 
 export default function Header() {
+  const { user } = useUser();
   const Navigation = [
     { name: "Play", href: "/", icon: <IoHome size={20} /> },
     { name: "History", href: "/history", icon: <GoHistory size={20} /> },
@@ -20,11 +19,16 @@ export default function Header() {
       href: "/leaderboard",
       icon: <MdLeaderboard size={20} />,
     },
+    { name: user ? "Profile" : "Login", href: "/account", icon: user ?  <Avatar className="w-6 h-6">
+        <AvatarFallback className="w-6 h-6 text-xs">
+          {user.username.slice(0, 2).toUpperCase()}
+        </AvatarFallback>
+      </Avatar> : <CiUser size={20} />  },
   ];
   const [currentTab, setCurrentTab] = useState(0);
   const [tabWidths, setTabWidths] = useState<number[]>([]);
 
-  const tabsRef = useRef<(HTMLAnchorElement | null)[]>([]);
+  const tabsRef = useRef<(HTMLAnchorElement | HTMLDivElement | null)[]>([]);
   const GAP_SIZE = 4;
 
   useEffect(() => {
@@ -60,7 +64,7 @@ export default function Header() {
               {nav.icon}
               <p className="text-sm hidden md:block">{nav.name}</p>
             </Link>
-          ))}
+          ))}{" "}
           <motion.div
             className="absolute inset-0 bg-secondary/70 rounded-full z-0"
             animate={{
@@ -68,13 +72,16 @@ export default function Header() {
               x: getTabOffset(currentTab),
             }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          />
-          <div
+          />{" "}
+          {/* <div
+            ref={(el) => {
+              tabsRef.current[3] = el;
+            }}
             className="flex items-center gap-1"
-            onClick={() => setCurrentTab(4)}
+            onClick={() => setCurrentTab(3)}
           >
             <UserIcon />
-          </div>
+          </div> */}
         </div>{" "}
         <div></div>
         {/* <UserIcon /> */}

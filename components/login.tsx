@@ -1,11 +1,10 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import api from "../utils/axios";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Button } from "./ui/button";
 import Loading from "./ui/loading";
-import Link from "next/link";
 import { AxiosError } from "axios";
 import { useUser } from "@/context/UserContext";
 
@@ -65,7 +64,7 @@ export default function Login() {
   return (
     <section className="flex flex-col items-center justify-center">
       <form
-        className="w-full p-4 max-w-md flex  flex-col gap-4"
+        className="w-full max-w-md flex  flex-col gap-4"
         onSubmit={handleSubmit}
       >
         <h1 className="text-2xl font-bold">
