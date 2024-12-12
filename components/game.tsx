@@ -257,7 +257,12 @@ export default function Game() {
 
   return (
     <div className="grid place-content-center h-screen p-4">
-      <h1 className="text-3xl font-extrabold  mb-8">Play</h1>
+      <h1 className="text-3xl font-extrabold flex items-center gap-2  mb-8">
+        Play -{" "}
+        <p className="capitalize" style={{ color: selectedDifficulty.color }}>
+          {selectedDifficulty.difficulty}
+        </p>
+      </h1>
 
       {/* Difficulty Buttons */}
       <div className="flex flex-wrap gap-4 justify-center mb-8">
