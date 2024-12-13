@@ -24,7 +24,7 @@ export default function UserProfile() {
             }
           >
             <div className="flex flex-col p-4 w-full items-center justify-center rounded-[16px]">
-              <div className="max-w-[500px] rounded-xl w-full  p-4 border">
+              <div className="max-w-[500px] rounded-xl backdrop-blur-[1px]  w-full  p-4 border">
                 <Login />
               </div>
             </div>
