@@ -4,7 +4,12 @@ import { Button } from "./ui/button";
 // import { Input } from "./ui/input";
 import { BsArrowRepeat } from "react-icons/bs";
 import { Difficulty } from "@/types/difficulty";
-import { Check, SkullIcon } from "lucide-react";
+import {
+  ArrowLeftFromLine,
+  Check,
+  KeyboardIcon,
+  SkullIcon,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import api from "@/utils/axios";
 import { useUser } from "@/context/UserContext";
@@ -18,13 +23,16 @@ export default function Game() {
   const [result, setResult] = useState("Submit");
   const [error, setError] = useState("");
   const [guess, setGuess] = useState("");
+  const [screenKeyboard, setScreenKeyboard] = useState(false);
 
   const [currentAttempts, setCurrentAttempts] = useState<number>(4);
   const [timeRemaining, setTimeRemaining] = useState(0);
   const { user } = useUser();
 
   const selectedDifficulty =
-    data.find((difficulty) => difficulty.difficulty === currentMode) || data[0];
+    data.find(
+      (difficulty: Difficulty) => difficulty.difficulty === currentMode
+    ) || data[0];
 
   const currentNumberId = selectedDifficulty?._id;
 
@@ -38,34 +46,25 @@ export default function Game() {
         }
 
         const data = response.data;
-        console.log("Fetched data:", data);
-        // Sort the data based on the 'max' field (easy -> impossible)
+        // console.log("Fetched data:", data);
         const sortedData = data.sort(
           (a: Difficulty, b: Difficulty) => a.max - b.max
         );
-        setData(sortedData);
-
-        const storedDate = localStorage.getItem("NumberDate");
-        const createdDate = new Date(data[0].created);
-        if (storedDate) {
-          const twentyFourHours = 24 * 60 * 60 * 1000;
-          const storedDateTime = new Date(storedDate);
-          console.log(
-            storedDateTime.getTime() + twentyFourHours <= createdDate.getTime()
-          );
-          if (
-            storedDateTime.getTime() + twentyFourHours <=
-            createdDate.getTime()
-          ) {
-            const keysToRemove = ["easy", "medium", "hard", "impossible"];
-            console.log("Removing local storage");
-            keysToRemove.forEach((key) => {
-              localStorage.removeItem(key);
-            });
-            localStorage.setItem("NumberDate", data[0].expires);
-          }
+        if (sortedData.length > 0) {
+          setData(sortedData);
         } else {
-          localStorage.setItem("NumberDate", data[0].expires);
+          setError("No data available");
+        }
+        const numberCreated = data[0].created;
+        const storedDate = localStorage.getItem("NumberDate");
+        if (!storedDate) {
+          console.log("No stored number date.");
+        }
+        if (storedDate !== numberCreated) {
+          const difficulties = ["easy", "medium", "hard", "impossible"];
+          difficulties.forEach((difficulty) => {
+            localStorage.removeItem(difficulty);
+          });
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -149,17 +148,17 @@ export default function Game() {
   };
   const handleSubmit = (guess: string) => async (e: React.FormEvent) => {
     e.preventDefault();
-    const selectedDifficulty = data.find(
-      (difficulty) => difficulty.difficulty === currentMode
-    );
-
     if (!selectedDifficulty) {
       console.error("No data found for current mode:", currentMode); // If no match
       return;
     }
 
     const value = selectedDifficulty.value;
-
+    console.log("Setting Number Date");
+    const storedDate = localStorage.getItem("NumberDate");
+    if (!storedDate) {
+      localStorage.setItem("NumberDate", data[0].created);
+    }
     if (!isValidGuess(guess)) {
       setError("Invalid guess.");
       return;
@@ -169,9 +168,12 @@ export default function Game() {
       return;
     }
     setError("");
-    if (value === parseInt(guess)) {
+    if (parseInt(guess) > selectedDifficulty.max) {
+      setError("Number out of range");
+      setGuess("");
+      return;
+    } else if (value === parseInt(guess)) {
       setResult("Correct!");
-
       addWin();
     } else if (value > parseInt(guess)) {
       setResult("Higher...");
@@ -180,9 +182,10 @@ export default function Game() {
       setResult("Lower...");
       addAttempt();
     }
+    setGuess("");
   };
 
-  const addWin = () => {
+  const addWin = async () => {
     const attempts = getAttempts();
     const storedWins = localStorage.getItem(currentMode);
     const parseWins = storedWins
@@ -191,9 +194,9 @@ export default function Game() {
     parseWins.completed = true;
     setModeWin(true);
     localStorage.setItem(currentMode, JSON.stringify(parseWins));
-    const res = api.post("/api/numbers/correct-guess", {
+    const res = await api.post("/api/numbers/correct-guess", {
       numberId: currentNumberId,
-      userId: "1234",
+      user: user,
     });
 
     console.log(res);
@@ -218,7 +221,7 @@ export default function Game() {
     setCurrentAttempts((prevAttempts) => prevAttempts - 1);
     const res = await api.post("/api/numbers/add-guess", {
       numberId: currentNumberId,
-      userId: user?._id,
+      user: user,
     });
     console.log(res);
   };
@@ -245,6 +248,8 @@ export default function Game() {
     console.log(currentAttempts);
   };
 
+  const keyboardInputs = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+
   if (loading) {
     return (
       <div className="grid min-h-screen min-w-screen place-content-center">
@@ -256,95 +261,127 @@ export default function Game() {
   }
 
   return (
-    <div className="grid place-content-center h-screen p-4">
-      <h1 className="text-3xl font-extrabold flex items-center gap-2  mb-8">
-        Play -{" "}
-        <p className="capitalize" style={{ color: selectedDifficulty.color }}>
-          {selectedDifficulty.difficulty}
+    <>
+      <div className=" flex-col justify-center items-center p-4">
+        <h1 className="text-3xl font-extrabold flex items-center gap-2  mb-8">
+          Play -{" "}
+          <p className="capitalize" style={{ color: selectedDifficulty.color }}>
+            {selectedDifficulty.difficulty}
+          </p>
+        </h1>
+
+        {/* Difficulty Buttons */}
+        <div className="flex flex-wrap gap-2 justify-center mb-8">
+          {Object.values(data).map((difficulty) => (
+            <>
+              <Button
+                size={"sm"}
+                variant="outline"
+                onClick={() => changeDifficulty(difficulty.difficulty)}
+                className={`capitalize  relative transition-all duration-300 ease-in-out transform hover:scale-105 ${
+                  currentMode === difficulty.difficulty &&
+                  "bg-secondary text-primary hover:bg-primary-foreground"
+                }`}
+                style={{
+                  color: difficulty.color,
+                }}
+                key={difficulty._id}
+              >
+                {difficulty.difficulty}
+              </Button>
+            </>
+          ))}
+        </div>
+
+        {/* Lives Counter */}
+        <div className="flex items-center justify-between gap-6 w-full mb-4 text-lg ">
+          {modeWin ? (
+            <p className="flex text-green-500 items-center gap-2">
+              <Check size={15} />
+              You guessed this number correctly!
+            </p>
+          ) : (
+            <p className="flex items-center gap-2">
+              <SkullIcon size={15} />
+              {currentAttempts} lives left
+            </p>
+          )}
+        </div>
+
+        {/* Countdown Timer */}
+        <p className="flex items-center gap-2 text-primary/70 mb-8 text-sm">
+          <BsArrowRepeat />
+          {hours}:{minutes}:{seconds} until numbers regenerate...
         </p>
-      </h1>
 
-      {/* Difficulty Buttons */}
-      <div className="flex flex-wrap gap-4 justify-center mb-8">
-        {Object.values(data).map((difficulty) => (
-          <>
-            <Button
-              variant="outline"
-              onClick={() => changeDifficulty(difficulty.difficulty)}
-              className={`capitalize  relative transition-all duration-300 ease-in-out transform hover:scale-105 ${
-                currentMode === difficulty.difficulty &&
-                "bg-secondary text-primary hover:bg-primary-foreground"
-              }`}
-              style={{
-                color: difficulty.color,
-              }}
-              key={difficulty._id}
+        {/* Error Message */}
+        <p className="text-destructive mb-6">{error}</p>
+
+        {/* Out of Lives or Guess Form */}
+        <div className="flex items-center w-full justify-center">
+          {currentAttempts <= 0 ? (
+            <p className="font-extrabold text-destructive text-4xl tracking-tighter flex gap-2 items-center">
+              <SkullIcon />
+              Out of lives...
+            </p>
+          ) : (
+            <form
+              onSubmit={handleSubmit(guess)}
+              className="flex items-center z-10 w-full justify-center flex-col gap-2"
             >
-              {difficulty.difficulty}
-            </Button>
-          </>
-        ))}
+              <div className="flex items-center gap-2 w-full">
+                <Input
+                  className={`bg-transparent border p-4 w-full outline-none  font-extrabold tracking-tighter`}
+                  placeholder={`1-${selectedDifficulty?.max}`}
+                  disabled={currentAttempts <= 0}
+                  id="guess"
+                  value={guess}
+                  onChange={(e) => setGuess(e.target.value)}
+                />
+                <div
+                  onClick={() => setScreenKeyboard(!screenKeyboard)}
+                  className={`border flex items-center justify-center rounded-md hover:scale-[1.02] active:scale-[0.98] hover:bg-secondary/50 h-[36px] w-[36px] cursor-pointer ${
+                    screenKeyboard && "bg-secondary"
+                  }`}
+                >
+                  <KeyboardIcon size={14} />
+                </div>
+              </div>
+              {screenKeyboard && (
+                <div className="grid grid-cols-4 w-full gap-3">
+                  {keyboardInputs.map((input) => (
+                    <div
+                      className="border flex items-center justify-center rounded-md hover:scale-[1.02] active:scale-[0.98] hover:bg-secondary/50 h-10 w-10 cursor-pointer"
+                      onClick={() => setGuess(guess + input)}
+                      key={input}
+                    >
+                      {input}
+                    </div>
+                  ))}
+                  <div
+                    className="border flex items-center justify-center rounded-md hover:scale-[1.02] active:scale-[0.98] hover:bg-secondary/50 h-10 w-10 cursor-pointer"
+                    onClick={() => setGuess(guess.slice(0, -1))}
+                  >
+                    <ArrowLeftFromLine />
+                  </div>
+                </div>
+              )}
+              <Button
+                className={`w-full font-extrabold hover:bg-none tracking-tighter ${
+                  result === "Higher..." && "bg-yellow-500"
+                } ${result === "Lower..." && "bg-yellow-500"} ${
+                  result === "Correct!" || (modeWin && "bg-green-500")
+                }`}
+                disabled={modeWin}
+                variant={currentAttempts <= 0 ? "destructive" : "default"}
+                type="submit"
+              >
+                {result}
+              </Button>
+            </form>
+          )}
+        </div>
       </div>
-
-      {/* Lives Counter */}
-      <div className="flex items-center justify-between gap-6 w-full mb-4 text-lg ">
-        {modeWin ? (
-          <p className="flex text-green-500 items-center gap-2">
-            <Check size={15} />
-            You guessed this number correctly!
-          </p>
-        ) : (
-          <p className="flex items-center gap-2">
-            <SkullIcon size={15} />
-            {currentAttempts} lives left
-          </p>
-        )}
-      </div>
-
-      {/* Countdown Timer */}
-      <p className="flex items-center gap-2 text-primary/70 mb-8 text-sm">
-        <BsArrowRepeat />
-        {hours}:{minutes}:{seconds} until numbers regenerate...
-      </p>
-
-      {/* Error Message */}
-      <p className="text-destructive mb-6">{error}</p>
-
-      {/* Out of Lives or Guess Form */}
-      <div className="flex items-center w-full justify-center">
-        {currentAttempts <= 0 ? (
-          <p className="font-extrabold text-destructive text-4xl tracking-tighter flex gap-2 items-center">
-            <SkullIcon />
-            Out of lives...
-          </p>
-        ) : (
-          <form
-            onSubmit={handleSubmit(guess)}
-            className="flex items-center z-10 justify-center flex-col gap-2"
-          >
-            <Input
-              className={`bg-transparent border p-4 w-full outline-none  font-extrabold tracking-tighter`}
-              placeholder={`1-${selectedDifficulty?.max}`}
-              disabled={currentAttempts <= 0}
-              id="guess"
-              value={guess}
-              onChange={(e) => setGuess(e.target.value)}
-            />
-            <Button
-              className={`w-full font-extrabold hover:bg-none tracking-tighter ${
-                result === "Higher..." && "bg-yellow-500"
-              } ${result === "Lower..." && "bg-yellow-500"} ${
-                result === "Correct!" || (modeWin && "bg-green-500")
-              }`}
-              disabled={modeWin}
-              variant={currentAttempts <= 0 ? "destructive" : "default"}
-              type="submit"
-            >
-              {result}
-            </Button>
-          </form>
-        )}
-      </div>
-    </div>
+    </>
   );
 }

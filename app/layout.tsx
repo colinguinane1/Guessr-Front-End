@@ -35,7 +35,7 @@ export default function RootLayout({
             className={`${geistSans.variable} ${geistMono.variable} antialiased font-[family-name:var(--font-geist-sans)] transition-colors duration-300`}
           >
             <BackgroundGrid /> <Header />
-            <div className="p-4 z-[1]">{children}</div>
+            <div className="">{children}</div>
           </body>
         </ThemeProvider>
       </UserProvider>
