@@ -7,14 +7,24 @@ import { Button } from "./ui/button";
 import Loading from "./ui/loading";
 import { AxiosError } from "axios";
 import { useUser } from "@/context/UserContext";
+import { useEffect } from "react";
 
 export default function Login() {
   const [formLogin, setFormLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string | null>("");
   const { setUser } = useUser();
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,6 +56,7 @@ export default function Login() {
         localStorage.setItem("token", response.data.token);
         console.log("User data:", response.data.user);
         setUser(response.data.user);
+        window.location.href = "/";
       } catch (err) {
         const error = err as AxiosError<{ message: string }>;
         console.error("Registration error details:", error.response?.data);
@@ -62,7 +73,7 @@ export default function Login() {
   return (
     <section className="flex flex-col items-center justify-center">
       <form
-        className="w-full max-w-md flex  flex-col gap-4"
+        className={`w-full max-w-md flex  flex-col gap-4`}
         onSubmit={handleSubmit}
       >
         <h1 className="text-2xl font-bold">
@@ -101,7 +112,7 @@ export default function Login() {
               {formLogin ? "Register" : "Login"}
             </Button>
           </p>
-          {formLogin && <p>Forgot Password</p>}
+          {/* {formLogin && <p>Forgot Password</p>} */}
         </div>
         <Button
           type="submit"
