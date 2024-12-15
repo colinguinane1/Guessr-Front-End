@@ -1,12 +1,17 @@
+import { User } from "./user";
+
 export type Difficulty = {
-  _id: string;
   difficulty: string;
+  _id: string;
+  min: number;
   max: number;
   value: number;
   color: string;
   attempts: number;
-  expires: string; // ISO 8601 date string
-  global_user_guesses: number;
+  expires: Date;
   created: string;
-  __v: number;
+  global_user_guesses: number;
+  correct_user_guesses: number;
+  correct_users: User;
+  v: string;
 };
