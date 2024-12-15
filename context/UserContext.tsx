@@ -2,12 +2,7 @@
 import api from "@/utils/axios";
 import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
-
-interface User {
-  _id: string;
-  email: string;
-  username: string;
-}
+import { User } from "@/types/user";
 
 interface UserContextType {
   user: User | null;

@@ -47,6 +47,8 @@ export default function UserProfile() {
       </h1>
       <p>ID: {user._id}</p>
       <p>Email: {user.email}</p>
+      <p>XP: {user.xp}</p>
+      <p>{user.profile_views} profile views. (TODO)</p>
       <LogOutButton />
       <ModeToggle />
     </div>

@@ -65,6 +65,7 @@ export default function Game() {
           difficulties.forEach((difficulty) => {
             localStorage.removeItem(difficulty);
           });
+          localStorage.setItem("NumberDate", numberCreated);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -82,13 +83,10 @@ export default function Game() {
     setModeWin(win);
     setResult("Submit");
     setGuess("");
-    if (!selectedDifficulty) {
-      return;
-    }
+
     const attempts = getAttempts();
     console.log(attempts + "here");
-    if (attempts) {
-    }
+
     setCurrentAttempts(selectedDifficulty?.attempts - attempts);
   }, [currentMode, selectedDifficulty]);
 
@@ -174,6 +172,7 @@ export default function Game() {
       return;
     } else if (value === parseInt(guess)) {
       setResult("Correct!");
+      addAttempt();
       addWin();
     } else if (value > parseInt(guess)) {
       setResult("Higher...");
