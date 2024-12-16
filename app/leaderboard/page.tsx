@@ -28,7 +28,7 @@ export default function History() {
   }, []);
   return (
     <section className={`p-4 max-w-4xl mx-auto`}>
-      <h1 className="text-2xl font-bold py-4">History</h1>
+      <h1 className="text-2xl font-bold py-4">Leaderboard</h1>
       <DataTable columns={user_columns} data={data} />
     </section>
   );
