@@ -61,7 +61,13 @@ export default function Game() {
           console.log("No stored number date.");
         }
         if (storedDate !== numberCreated) {
-          const difficulties = ["easy", "medium", "hard", "impossible"];
+          const difficulties = [
+            "easy",
+            "medium",
+            "hard",
+            "very hard",
+            "impossible",
+          ];
           difficulties.forEach((difficulty) => {
             localStorage.removeItem(difficulty);
           });
@@ -172,7 +178,6 @@ export default function Game() {
       return;
     } else if (value === parseInt(guess)) {
       setResult("Correct!");
-      addAttempt();
       addWin();
     } else if (value > parseInt(guess)) {
       setResult("Higher...");
@@ -192,10 +197,17 @@ export default function Game() {
       : { attempts: attempts, completed: true };
     parseWins.completed = true;
     setModeWin(true);
+    const totalExperience = () => {
+      const removedXp = attempts * (selectedDifficulty.maxExperience * 0.15);
+      console.log(removedXp);
+      return Math.ceil(selectedDifficulty.maxExperience - removedXp);
+    };
+    const xp = totalExperience();
     localStorage.setItem(currentMode, JSON.stringify(parseWins));
     const res = await api.post("/api/numbers/correct-guess", {
       numberId: currentNumberId,
       user: user,
+      xp: xp > 0 ? xp : 0,
     });
 
     console.log(res);

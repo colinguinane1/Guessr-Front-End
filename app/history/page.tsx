@@ -19,7 +19,7 @@ export default function History() {
         const data = response.data;
 
         // Remove the last 4 difficulties from the data array
-        const filteredData = data.slice(0, data.length - 4);
+        const filteredData = data.slice(0, data.length - 5);
 
         setData(filteredData); // Set the filtered data in the state
       } catch (error) {

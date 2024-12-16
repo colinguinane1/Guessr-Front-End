@@ -2,6 +2,8 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { User } from "@/types/user";
+import Link from "next/link";
+import { ExternalLink, ExternalLinkIcon } from "lucide-react";
 
 // export interface User {
 //   _id: string;
@@ -15,11 +17,20 @@ import { User } from "@/types/user";
 
 export const user_columns: ColumnDef<User>[] = [
   {
-    accessorKey: "username",
+    id: "username",
     header: "Username",
+    cell: ({ row }) => (
+      <Link
+        className="flex gap-2 hover:underline items-center"
+        href={`/profile/${row.original._id}`}
+      >
+        {row.original.username} <ExternalLinkIcon size={12} />
+      </Link>
+    ),
   },
   {
-    accessorKey: "guessed_numbers",
+    accessorFn: (row) => row.guessed_numbers.length,
+    id: "guessed_numbers_length",
     header: "Guessed Numbers",
   },
   {

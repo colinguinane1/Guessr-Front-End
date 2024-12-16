@@ -5,8 +5,20 @@ import Login from "@/components/login";
 import { Drawer } from "vaul";
 import LogOutButton from "@/components/LogOutButton";
 import { ModeToggle } from "@/components/ui/theme-switcher";
+import { useEffect, useState } from "react";
+import { CgSpinner } from "react-icons/cg";
 export default function UserProfile() {
-  const { user } = useUser(); // Access the user data from the context
+  const { user, refetchUserData } = useUser();
+  const [loading, setLoading] = useState(true);
+
+  // Refetch to make sure data is up to date.
+  useEffect(() => {
+    if (!user) {
+      refetchUserData();
+    } else {
+      setLoading(false);
+    }
+  }, [user, refetchUserData]);
 
   if (!user) {
     return (
@@ -16,7 +28,6 @@ export default function UserProfile() {
           <Drawer.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
           <Drawer.Content
             className="fixed bottom-20  outline-none w-screen "
-            // The gap between the edge of the screen and the drawer is 8px in this case.
             style={
               {
                 "--initial-transform": "calc(100% + 8px)",
@@ -31,6 +42,16 @@ export default function UserProfile() {
           </Drawer.Content>
         </Drawer.Portal>
       </Drawer.Root>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="grid min-h-screen min-w-screen place-content-center">
+        <p>
+          <CgSpinner size={50} className="animate-spin" />
+        </p>
+      </div>
     );
   }
 
