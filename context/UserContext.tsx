@@ -7,6 +7,7 @@ import { User } from "@/types/user";
 interface UserContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  refetchUserData: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -56,8 +57,14 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const refetchUserData = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchUserData(token);
+    }
+  };
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, refetchUserData }}>
       {children}
     </UserContext.Provider>
   );

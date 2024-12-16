@@ -41,7 +41,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   return (
     <div>
       <p>User: {id}</p>
-      <pre>{JSON.stringify(profile)}</pre>
+      <p>{JSON.stringify(profile)}</p>
     </div>
   );
 }

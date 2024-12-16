@@ -7,6 +7,7 @@ export type Difficulty = {
   max: number;
   value: number;
   color: string;
+  maxExperience: number;
   attempts: number;
   expires: Date;
   created: string;
