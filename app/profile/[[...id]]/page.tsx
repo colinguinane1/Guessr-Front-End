@@ -4,9 +4,12 @@ import { use } from "react";
 import { useEffect, useState } from "react";
 import { User } from "@/types/user";
 import { CgSpinner } from "react-icons/cg";
+import { useUser } from "@/context/UserContext";
+import UserCard from "@/components/UserCard";
 
 export default function Page({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
+  const { user } = useUser();
   const { id } = resolvedParams;
   const [profile, setProfile] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -26,6 +29,16 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
     if (id) {
       fetchUserById(id);
     }
+    const addProfileView = async (id: string) => {
+      const response = await api.post(`/api/auth/profile/${id}`, { user });
+      if (!response.data) {
+        console.error("No user data in response");
+        return;
+      }
+      console.log(profile?.profile_views);
+    }
+    addProfileView(id);
+    
   }, []);
 
   if (loading) {
@@ -39,9 +52,9 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   }
 
   return (
-    <div>
-      <p>User: {id}</p>
-      <p>{JSON.stringify(profile)}</p>
+    <div className="flex flex-col items-center p-4  text-lg space-y-4 justify-center">
+    <UserCard user={profile}/>
+      <p>{profile?.profile_views} profile views.</p>
     </div>
   );
 }
