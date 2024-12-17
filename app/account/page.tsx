@@ -10,7 +10,6 @@ import { CgSpinner } from "react-icons/cg";
 import { levels } from "@/types/levels";
 import AnimatedCircularProgressBar from "@/components/ui/animated-circular-progress-bar";
 import UserCard from "@/components/UserCard";
- 
 
 export default function UserProfile() {
   const { user, refetchUserData } = useUser();
@@ -62,11 +61,11 @@ export default function UserProfile() {
 
   return (
     <div className="flex flex-col items-center p-4  text-lg space-y-4 justify-center">
-    <UserCard user={user}/>
+      <UserCard user={user} />
 
       <p>Email: {user.email}</p>
 
-      <p>{user.profile_views} profile views. (TODO)</p>
+      <p>{user.profile_views} profile views.</p>
       <LogOutButton />
       <ModeToggle />
     </div>
