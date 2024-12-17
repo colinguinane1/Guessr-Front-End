@@ -66,6 +66,13 @@ export default function UserProfile() {
       <p>Email: {user.email}</p>
 
       <p>{user.profile_views} profile views.</p>
+      <p>
+        {user.guessed_numbers.map((number) => (
+          <div key={number._id}>
+            <p>{number.value}</p>
+          </div>
+        ))}
+      </p>
       <LogOutButton />
       <ModeToggle />
     </div>

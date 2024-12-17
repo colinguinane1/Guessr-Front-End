@@ -36,9 +36,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         return;
       }
       console.log(profile?.profile_views);
-    }
+    };
     addProfileView(id);
-    
   }, []);
 
   if (loading) {
@@ -53,8 +52,15 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <div className="flex flex-col items-center p-4  text-lg space-y-4 justify-center">
-    <UserCard user={profile}/>
+      <UserCard user={profile} />
       <p>{profile?.profile_views} profile views.</p>
+      <p>
+        {profile?.guessed_numbers.map((number) => (
+          <div key={number._id}>
+            <p>{number.value}</p>
+          </div>
+        ))}
+      </p>
     </div>
   );
 }
