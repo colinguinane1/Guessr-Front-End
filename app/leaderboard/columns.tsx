@@ -4,6 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { User } from "@/types/user";
 import Link from "next/link";
 import { ExternalLink, ExternalLinkIcon } from "lucide-react";
+import { levels } from "@/types/levels";
+
 
 // export interface User {
 //   _id: string;
@@ -15,7 +17,26 @@ import { ExternalLink, ExternalLinkIcon } from "lucide-react";
 //   profile_views: number;
 // }
 
+const getLevelByXP = (xp: number) => {
+  let level = 1; // Default to level 1 if no XP is found
+
+  // Loop through the levels to determine the level based on XP
+  for (let i = 0; i < levels.length; i++) {
+    if (xp >= levels[i].xp) {
+      level = levels[i].level + 1; // Move to next level if XP exceeds threshold
+    } else {
+      break; // Once we find the level, stop
+    }
+  }
+
+  return level;
+};
+
 export const user_columns: ColumnDef<User>[] = [
+  {
+    accessorFn: (row) => getLevelByXP(row.xp),
+    header: "Level",
+  },
   {
     id: "username",
     header: "Username",
