@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { User } from "@/types/user";
 import Link from "next/link";
 import { ExternalLink, ExternalLinkIcon } from "lucide-react";
+import { levels } from "@/types/levels";
 
 
 // export interface User {
