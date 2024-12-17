@@ -10,6 +10,21 @@ import { CgSpinner } from "react-icons/cg";
 import { levels } from "@/types/levels";
 import AnimatedCircularProgressBar from "@/components/ui/animated-circular-progress-bar";
 
+export const getLevelByXP = (xp: number) => {
+  let level = 1; // Default to level 1 if no XP is found
+
+  // Loop through the levels to determine the level based on XP
+  for (let i = 0; i < levels.length; i++) {
+    if (xp >= levels[i].xp) {
+      level = levels[i].level + 1; // Move to next level if XP exceeds threshold
+    } else {
+      break; // Once we find the level, stop
+    }
+  }
+
+  return level;
+};
+
 export default function UserProfile() {
   const { user, refetchUserData } = useUser();
   const [loading, setLoading] = useState(true);
@@ -22,21 +37,6 @@ export default function UserProfile() {
       setLoading(false);
     }
   }, [user, refetchUserData]);
-
-  const getLevelByXP = (xp: number) => {
-    let level = 1; // Default to level 1 if no XP is found
-
-    // Loop through the levels to determine the level based on XP
-    for (let i = 0; i < levels.length; i++) {
-      if (xp >= levels[i].xp) {
-        level = levels[i].level + 1; // Move to next level if XP exceeds threshold
-      } else {
-        break; // Once we find the level, stop
-      }
-    }
-
-    return level;
-  };
 
   // Get the next level number based on the current XP
   const getNextLevelByXP = (xp: number) => {

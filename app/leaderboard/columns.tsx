@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { User } from "@/types/user";
 import Link from "next/link";
 import { ExternalLink, ExternalLinkIcon } from "lucide-react";
+import { getLevelByXP } from "../account/page";
 
 // export interface User {
 //   _id: string;
@@ -16,6 +17,10 @@ import { ExternalLink, ExternalLinkIcon } from "lucide-react";
 // }
 
 export const user_columns: ColumnDef<User>[] = [
+  {
+    accessorFn: (row) => getLevelByXP(row.xp),
+    header: "Level",
+  },
   {
     id: "username",
     header: "Username",
