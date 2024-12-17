@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { CgSpinner } from "react-icons/cg";
 import { levels } from "@/types/levels";
 import AnimatedCircularProgressBar from "@/components/ui/animated-circular-progress-bar";
+
 export default function UserProfile() {
   const { user, refetchUserData } = useUser();
   const [loading, setLoading] = useState(true);
@@ -24,48 +25,63 @@ export default function UserProfile() {
 
   const getLevelByXP = (xp: number) => {
     let level = 1; // Default to level 1 if no XP is found
+
+    // Loop through the levels to determine the level based on XP
     for (let i = 0; i < levels.length; i++) {
       if (xp >= levels[i].xp) {
-        level = levels[i].level;
+        level = levels[i].level + 1; // Move to next level if XP exceeds threshold
       } else {
-        break; // Stop once we find the level
+        break; // Once we find the level, stop
       }
     }
+
     return level;
   };
 
+  // Get the next level number based on the current XP
   const getNextLevelByXP = (xp: number) => {
-    let level = 1; // Default to level 1 if no XP is found
+    let nextLevel = 1; // Default to level 1 if no XP is found
+
+    // Loop through the levels to determine the next level based on XP
     for (let i = 0; i < levels.length; i++) {
       if (xp >= levels[i].xp) {
-        level = levels[i].level;
+        nextLevel = levels[i].level + 1; // Get the next level if XP is above threshold
       } else {
-        break; // Stop once we find the level
+        break;
       }
     }
-    return level + 1;
+
+    return nextLevel;
   };
 
+  // Get XP required to reach the next level
+  const getXpTilNextLevel = (xp: number) => {
+    let xpTilNextLevel = 0;
+
+    // Loop through the levels to determine how much XP is needed for the next level
+    for (let i = 0; i < levels.length; i++) {
+      if (xp < levels[i].xp) {
+        xpTilNextLevel = levels[i].xp - xp; // Calculate XP remaining for next level
+        break;
+      }
+    }
+
+    return xpTilNextLevel;
+  };
+
+  // Get the XP threshold for the next level
   const getNextLevelThreshold = (xp: number) => {
     let nextLevelThreshold = 0;
+
+    // Loop through the levels to determine the XP threshold for the next level
     for (let i = 0; i < levels.length; i++) {
       if (xp < levels[i].xp) {
         nextLevelThreshold = levels[i].xp;
-        break; // Stop once we find the level
+        break;
       }
     }
-    return nextLevelThreshold;
-  };
 
-  const getXpTilNextLevel = (xp: number) => {
-    let xpTilNextLevel = 0;
-    for (let i = 0; i < levels.length; i++) {
-      if (xp < levels[i].xp) {
-        xpTilNextLevel = levels[i].xp - xp;
-        break; // Stop once we find the level
-      }
-    }
-    return xpTilNextLevel;
+    return nextLevelThreshold;
   };
 
   if (!user) {
@@ -103,8 +119,9 @@ export default function UserProfile() {
     );
   }
 
-  const levelPercentage =
-    (getXpTilNextLevel(user.xp) / getNextLevelThreshold(user.xp)) * 100;
+  const playerLevel = getLevelByXP(user.xp); // Get the player's current level
+  const nextLevel = getNextLevelByXP(user.xp); // Get the next level number
+  const xpTilNextLevel = getXpTilNextLevel(user.xp); // Get XP required to next level
 
   return (
     <div className="flex flex-col items-center p-4  text-lg space-y-4 justify-center">
@@ -119,17 +136,17 @@ export default function UserProfile() {
             label={``}
             max={100}
             min={0}
-            value={levelPercentage}
+            value={(user.xp / getNextLevelThreshold(user.xp)) * 100}
             gaugePrimaryColor="rgb(79 70 229)"
             gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
           />
         </div>
         <div>
           <p>
-            <h1 className="font-normal">{user.username}</h1>
+            <h1 className="font-bold">{user.username}</h1>
           </p>
-          <p>
-            {getXpTilNextLevel(user.xp)}XP til Level {getNextLevelByXP(user.xp)}
+          <p className="text-sm text-primary/50">
+            Level {playerLevel} - {user.xp} / {getNextLevelThreshold(user.xp)}
           </p>
         </div>
       </div>
