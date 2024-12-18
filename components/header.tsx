@@ -23,8 +23,8 @@ export default function Header() {
       name: user ? "User" : "Login",
       href: "/account",
       icon: user ? (
-        <Avatar className="w-6 h-6">
-          <AvatarFallback className="w-6 h-6 text-xs">
+        <Avatar className="w-[20px] h-[20px]">
+          <AvatarFallback className="w-[20px] h-[20px] text-xs">
             {user.username.slice(0, 2).toUpperCase()}
           </AvatarFallback>
         </Avatar>

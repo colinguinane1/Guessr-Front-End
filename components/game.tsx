@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import api from "@/utils/axios";
 import { useUser } from "@/context/UserContext";
+import { Toaster, toast } from "sonner";
 
 export default function Game() {
   const [data, setData] = useState<Difficulty[]>([]); // Initialize as an empty object
@@ -209,7 +210,8 @@ export default function Game() {
       user: user,
       xp: xp > 0 ? xp : 0,
     });
-
+    const addedXp = res.data.xp;
+    toast.success(`You have gained ${addedXp} XP!`);
     console.log(res);
   };
 
