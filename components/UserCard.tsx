@@ -82,7 +82,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
   });
   if (!user) {
     return (
-      <div className="flex items-center bg-primary-foreground p-4 rounded-xl gap-4">
+      <div className="flex items-center bg-card border p-4 rounded-xl gap-4">
         No user found
       </div>
     );
@@ -92,7 +92,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
   const nextLevel = getNextLevelByXP(user.xp); // Get the next level number
   const xpTilNextLevel = getXpTilNextLevel(user.xp); // Get XP required to next level
   return (
-    <div className="flex items-center bg-primary-foreground p-4 rounded-xl gap-4">
+    <div className="flex items-center bg-card border p-4 rounded-xl gap-4">
       <Avatar className="w-20 h-20 relative">
         <AvatarFallback className="w-20 h-20 text-2xl">
           {user.username.slice(0, 2).toUpperCase()}

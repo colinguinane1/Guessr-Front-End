@@ -28,7 +28,7 @@ export default function Game() {
 
   const [currentAttempts, setCurrentAttempts] = useState<number>(4);
   const [timeRemaining, setTimeRemaining] = useState(0);
-  const { user } = useUser();
+  const { user, refetchUserData } = useUser();
 
   const selectedDifficulty =
     data.find(
@@ -125,13 +125,13 @@ export default function Game() {
 
       if (distance <= 0) {
         clearInterval(interval);
-        setTimeRemaining(0); // Stop countdown when time is up
+        setTimeRemaining(0); 
       } else {
         setTimeRemaining(distance);
       }
     }, 1000);
 
-    return () => clearInterval(interval); // Clean up the interval on component unmount
+    return () => clearInterval(interval); // Cleanup
   }, [data, currentMode]);
 
   const formatTime = (time: number) => {
@@ -148,18 +148,16 @@ export default function Game() {
   const { hours, minutes, seconds } = formatTime(timeRemaining);
 
   const isValidGuess = (guess: string) => {
-    // Regular expression for whole numbers (positive or negative)
     return /^[+-]?\d+$/.test(guess);
   };
   const handleSubmit = (guess: string) => async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedDifficulty) {
-      console.error("No data found for current mode:", currentMode); // If no match
+      console.error("No data found for current mode:", currentMode); 
       return;
     }
 
     const value = selectedDifficulty.value;
-    console.log("Setting Number Date");
     const storedDate = localStorage.getItem("NumberDate");
     if (!storedDate) {
       localStorage.setItem("NumberDate", data[0].created);
@@ -200,7 +198,7 @@ export default function Game() {
     setModeWin(true);
     const totalExperience = () => {
       const removedXp = attempts * (selectedDifficulty.maxExperience * 0.15);
-      console.log(removedXp);
+    
       return Math.ceil(selectedDifficulty.maxExperience - removedXp);
     };
     const xp = totalExperience();
@@ -212,6 +210,7 @@ export default function Game() {
     });
     const addedXp = res.data.xp;
     toast.success(`You have gained ${addedXp} XP!`);
+    refetchUserData();
     console.log(res);
   };
 
@@ -245,10 +244,10 @@ export default function Game() {
       ? JSON.parse(attempts)
       : { attempts: 0, completed: false };
     if (parseAttempts.attempts === null) {
-      console.log("Current Attempts" + 0);
+     
       return 0;
     }
-    console.log("Current Attempts" + attempts);
+ 
     return Number(parseAttempts.attempts);
   };
 
@@ -258,7 +257,7 @@ export default function Game() {
       return;
     }
 
-    console.log(currentAttempts);
+  
   };
 
   const keyboardInputs = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
