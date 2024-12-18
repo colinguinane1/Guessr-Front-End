@@ -17,6 +17,7 @@ import { MdManageAccounts } from "react-icons/md";
 import api from "@/utils/axios";
 import { toast } from "sonner";
 import Loading from "@/components/ui/loading";
+import AccountSettings from "@/components/account-settings";
 
 export default function UserProfile() {
   const { user, refetchUserData } = useUser();
@@ -96,26 +97,10 @@ export default function UserProfile() {
   return (
     <div className="flex flex-col items-center p-4  text-lg space-y-4 justify-center">
       <UserCard user={user} />
-      <form onSubmit={handleSubmit} className="flex-col space-y-2 bg-card border p-4 rounded-xl items-center gap-4">
-        <h1 className="flex items-center gap-2"><MdManageAccounts/>Account Settings</h1>
-        <div>
-        <div> <Label htmlFor="username" >Email</Label>
-        <Input  id="password" type="text" placeholder="Email" disabled value={user.email}></Input></div>
-        <Label htmlFor="username" >Username</Label>
-        <Input onChange={(e) => setChangeUsername(e.target.value)} id="username" type="text" placeholder="Change Username" value={changeUsername}></Input></div>
-          <div> <Label htmlFor="username" >Password</Label>
-        <Input onChange={(e) => setChangePassword(e.target.value)} id="password" type="text" placeholder="Change Password" value={changePassword}></Input></div>
-        <Button type="submit" disabled={formLoading}>{formLoading ? <Loading/> : "Save"}</Button>
-      </form>
-      <p>Email: {user.email}</p>
-
-      <p>{user.profile_views} profile views.</p>
+    <AccountSettings user={user}/>
       <p>
-        {user.guessed_numbers.map((number) => (
-          <div key={number._id}>
-            <p>{number.value}</p>
-          </div>
-        ))}
+      
+    
       </p>
       <LogOutButton />
       <ModeToggle />
