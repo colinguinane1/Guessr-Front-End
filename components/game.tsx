@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import api from "@/utils/axios";
 import { useUser } from "@/context/UserContext";
 import { Toaster, toast } from "sonner";
+import About from "./about";
+import { AxiosError } from "axios";
 
 export default function Game() {
   const [data, setData] = useState<Difficulty[]>([]); // Initialize as an empty object
@@ -125,7 +127,7 @@ export default function Game() {
 
       if (distance <= 0) {
         clearInterval(interval);
-        setTimeRemaining(0); 
+        setTimeRemaining(0);
       } else {
         setTimeRemaining(distance);
       }
@@ -153,7 +155,7 @@ export default function Game() {
   const handleSubmit = (guess: string) => async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedDifficulty) {
-      console.error("No data found for current mode:", currentMode); 
+      console.error("No data found for current mode:", currentMode);
       return;
     }
 
@@ -198,20 +200,25 @@ export default function Game() {
     setModeWin(true);
     const totalExperience = () => {
       const removedXp = attempts * (selectedDifficulty.maxExperience * 0.15);
-    
+
       return Math.ceil(selectedDifficulty.maxExperience - removedXp);
     };
     const xp = totalExperience();
     localStorage.setItem(currentMode, JSON.stringify(parseWins));
-    const res = await api.post("/api/numbers/correct-guess", {
-      numberId: currentNumberId,
-      user: user,
-      xp: xp > 0 ? xp : 0,
-    });
-    const addedXp = res.data.xp;
-    toast.success(`You have gained ${addedXp} XP!`);
-    refetchUserData();
-    console.log(res);
+    if (user) {
+      try {
+        const res = await api.post("/api/numbers/correct-guess", {
+          numberId: currentNumberId,
+          user: user,
+          xp: xp > 0 ? xp : 0,
+        });
+        const addedXp = res.data.xp;
+        toast.success(`You have gained ${addedXp} XP!`);
+      } catch (error: AxiosError | any) {
+        toast.error(error.response.data.message);
+      }
+      refetchUserData();
+    }
   };
 
   const checkWin = () => {
@@ -244,10 +251,9 @@ export default function Game() {
       ? JSON.parse(attempts)
       : { attempts: 0, completed: false };
     if (parseAttempts.attempts === null) {
-     
       return 0;
     }
- 
+
     return Number(parseAttempts.attempts);
   };
 
@@ -256,8 +262,6 @@ export default function Game() {
     if (!selectedDifficulty) {
       return;
     }
-
-  
   };
 
   const keyboardInputs = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
@@ -274,6 +278,7 @@ export default function Game() {
 
   return (
     <>
+      <About />
       <div className=" flex-col justify-center items-center p-4">
         <h1 className="text-3xl font-extrabold flex items-center gap-2  mb-8">
           Play -{" "}

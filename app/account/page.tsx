@@ -18,13 +18,15 @@ import api from "@/utils/axios";
 import { toast } from "sonner";
 import Loading from "@/components/ui/loading";
 import AccountSettings from "@/components/account-settings";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 export default function UserProfile() {
   const { user, refetchUserData } = useUser();
   const [loading, setLoading] = useState(true);
   const [changeUsername, setChangeUsername] = useState("");
   const [changePassword, setChangePassword] = useState("");
-      const [formLoading, setFormLoading] = useState(false);
+  const [formLoading, setFormLoading] = useState(false);
 
   // Refetch to make sure data is up to date.
   useEffect(() => {
@@ -72,36 +74,17 @@ export default function UserProfile() {
     );
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setFormLoading(true);
-    const response = await api.post("/api/auth/account", {
-      userId: user._id,
-      username: changeUsername,
-      password: changePassword,
-    })  
-    if (response.status !== 200) {
-      console.error("No user data in response");
-      toast.error("Error updating account.");
-      setFormLoading(false);
-    }
-     else {
-      toast.success("Account updated successfully!"); 
-       setFormLoading(false);
-    }
-  
-    refetchUserData();
-    }
-
-
   return (
-    <div className="flex flex-col items-center p-4  text-lg space-y-4 justify-center">
+    <div className="flex flex-col  p-4  text-lg space-y-4 justify-center">
       <UserCard user={user} />
-    <AccountSettings user={user}/>
-      <p>
-      
-    
-      </p>
+      <Link
+        className="flex items-center text-sm text-primary/50 underline"
+        href={`/profile/${user._id}`}
+      >
+        View Public Profile <ChevronRight />
+      </Link>
+      <AccountSettings user={user} />
+
       <LogOutButton />
       <ModeToggle />
     </div>
