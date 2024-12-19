@@ -76,7 +76,10 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           {" "}
           <p>{cutGuessedNumbers?.length} guessed numbers</p>
           {cutGuessedNumbers?.map((number) => (
-            <div className="flex items-center justify-between w-full gap-2">
+            <div
+              key={number._id}
+              className="flex items-center justify-between w-full gap-2"
+            >
               <div className="flex items-center gap-2">
                 <p className="capitalize">{number.difficulty}</p>
                 <p>{number.value}</p>

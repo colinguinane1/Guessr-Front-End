@@ -35,8 +35,12 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
       } else {
         toast.success("Account updated successfully!");
       }
-    } catch (error: AxiosError | any) {
-      toast.error(error.response.data.message);
+    } catch (error) {
+      if (error instanceof AxiosError && error.response) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
     }
 
     setFormLoading(false);

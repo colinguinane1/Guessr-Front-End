@@ -30,9 +30,9 @@ export default function About() {
               </p>
               <p className="text-gray-600">
                 I then later moved on to learning web development and thought it
-                would be fun to recreate with the new skills I've learned and to
-                learn new ones. This app is built with the popular MERN stack
-                which was my first time using it.
+                would be fun to recreate with the new skills I&apos;ve learned
+                and to learn new ones. This app is built with the popular MERN
+                stack which was my first time using it.
               </p>
             </div>
             <div className="p-4  mt-auto">
@@ -91,9 +91,9 @@ export default function About() {
                 </p>
                 <p className="text-gray-600">
                   I then later moved on to learning web development and thought
-                  it would be fun to recreate with the new skills I've learned
-                  and to learn new ones. This app is built with the popular MERN
-                  stack which was my first time using it.
+                  it would be fun to recreate with the new skills I&apos;ve
+                  learned and to learn new ones. This app is built with the
+                  popular MERN stack which was my first time using it.
                 </p>
               </div>
               <div className="p-4 bg-gray-100 border-t border-gray-200 mt-auto">
