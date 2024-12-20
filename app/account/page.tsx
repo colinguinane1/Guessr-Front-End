@@ -75,18 +75,20 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="flex flex-col  p-4  text-lg space-y-4 justify-center">
-      <UserCard user={user} />
-      <Link
-        className="flex items-center text-sm text-primary/50 underline"
-        href={`/profile/${user._id}`}
-      >
-        View Public Profile <ChevronRight />
-      </Link>
-      <AccountSettings user={user} />
-
-      <LogOutButton />
-      <ModeToggle />
+    <div className="flex flex-col items-center w-full p-4 text-lg">
+      <div className="w-full max-w-4xl p-4 rounded-xl gap-4 space-y-4">
+        <h1 className="font-bold text-2xl">Account</h1>
+        <UserCard user={user} />
+        <Link
+          className="flex items-center text-sm text-primary/50 underline"
+          href={`/profile/${user._id}`}
+        >
+          View Public Profile <ChevronRight />
+        </Link>
+        <AccountSettings user={user} />
+        <LogOutButton />
+        <ModeToggle />
+      </div>
     </div>
   );
 }
