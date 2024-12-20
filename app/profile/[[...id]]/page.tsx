@@ -67,7 +67,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   return (
     <div className="flex flex-col items-center w-full p-4 text-lg">
       <div className="w-full max-w-4xl p-4 rounded-xl gap-4 space-y-4">
-        <h1 className="font-bold text-2xl">{profile?.username}'s profile</h1>
+        <h1 className="font-bold text-2xl">{profile?.username}&apos;s profile</h1>
       <UserCard user={profile} />
       <p className="flex items-center gap-1">
         {profile?.profile_views} <EyeIcon size={15} /> views
