@@ -39,6 +39,21 @@ export default function Game() {
 
   const currentNumberId = selectedDifficulty?._id;
 
+
+
+  const clearLocalStorage = () => {
+    const difficulties = [
+      "easy",
+      "medium",
+      "hard",
+      "very hard",
+      "impossible",
+    ];
+    difficulties.forEach((difficulty) => {
+      localStorage.removeItem(difficulty);
+    });
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,17 +79,14 @@ export default function Game() {
           console.log("No stored number date.");
         }
         if (storedDate !== numberCreated) {
-          const difficulties = [
-            "easy",
-            "medium",
-            "hard",
-            "very hard",
-            "impossible",
-          ];
-          difficulties.forEach((difficulty) => {
-            localStorage.removeItem(difficulty);
-          });
+        clearLocalStorage();
           localStorage.setItem("NumberDate", numberCreated);
+        }
+        if( user) {
+          const res = await api.get("/api/numbers/user-data")
+          if (res.data) {
+            console.log("User number data:", res.data);
+          }
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -211,6 +223,7 @@ export default function Game() {
           numberId: currentNumberId,
           user: user,
           xp: xp > 0 ? xp : 0,
+          mode: currentMode,
         });
         const addedXp = res.data.xp;
         toast.success(`You have gained ${addedXp} XP!`);
@@ -227,6 +240,14 @@ export default function Game() {
   };
 
   const checkWin = () => {
+    if ( user) {
+      const currentData = new Map(Object.entries(user.current_number_data));
+      const attemptsData = currentData.get(currentMode);
+      if (!attemptsData) {
+        return false;
+      }
+      return attemptsData.win;
+    }
     const storedWins = localStorage.getItem(currentMode);
     const parseWins = storedWins ? JSON.parse(storedWins) : null;
     if (parseWins && parseWins.completed !== undefined) {
@@ -245,21 +266,28 @@ export default function Game() {
     setCurrentAttempts((prevAttempts) => prevAttempts - 1);
     const res = await api.post("/api/numbers/add-guess", {
       numberId: currentNumberId,
-      user: user,
+      userId: user?._id,
+      mode: currentMode,
     });
     console.log(res);
   };
 
   const getAttempts = () => {
-    const attempts = localStorage.getItem(currentMode);
-    const parseAttempts = attempts
-      ? JSON.parse(attempts)
-      : { attempts: 0, completed: false };
-    if (parseAttempts.attempts === null) {
-      return 0;
+    if (user) {
+      // Convert plain object to Map
+      const currentData = new Map(Object.entries(user.current_number_data));
+      const attemptsData = currentData.get(currentMode);
+      if (!attemptsData) {
+        return 0;
+      }
+      return attemptsData.attempts;
+    } else {
+      const attempts = localStorage.getItem(currentMode);
+      const parseAttempts = attempts
+        ? JSON.parse(attempts)
+        : { attempts: 0, completed: false };
+      return parseAttempts.attempts || 0;
     }
-
-    return Number(parseAttempts.attempts);
   };
 
   const changeDifficulty = (difficulty: string) => {

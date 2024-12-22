@@ -41,6 +41,8 @@ export default function UserProfile() {
 
   if (!user) {
     return (
+      <div>
+       <div className="grid place-content-center h-[80vh] w-screen"><h1 className="font-bold text-2xl">Create an Account</h1><p>Save your data and compete in the Leaderboard!</p></div> 
       <Drawer.Root modal={false} open={true}>
         <Drawer.Trigger className="relative flex px-3"></Drawer.Trigger>
         <Drawer.Portal>
@@ -60,7 +62,7 @@ export default function UserProfile() {
             </div>
           </Drawer.Content>
         </Drawer.Portal>
-      </Drawer.Root>
+      </Drawer.Root></div>
     );
   }
 
@@ -76,7 +78,7 @@ export default function UserProfile() {
 
   return (
     <div className="flex flex-col items-center w-full p-4 text-lg">
-      <div className="w-full max-w-4xl p-4 rounded-xl gap-4 space-y-4">
+      <div className="w-full max-w-4xl p-4 flex-col flex rounded-xl  space-y-4">
         <h1 className="font-bold text-2xl">Account</h1>
         <UserCard user={user} />
         <Link

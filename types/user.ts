@@ -6,6 +6,7 @@ export interface User {
   username: string;
   password: string;
   guessed_numbers: Difficulty[];
+  current_number_data: Map<string, number>,
   xp: number;
   profile_views: number;
 }
