@@ -41,28 +41,32 @@ export default function UserProfile() {
 
   if (!user) {
     return (
-      <div>
-       <div className="grid place-content-center h-[80vh] w-screen"><h1 className="font-bold text-2xl">Create an Account</h1><p>Save your data and compete in the Leaderboard!</p></div> 
-      <Drawer.Root modal={false} open={true}>
-        <Drawer.Trigger className="relative flex px-3"></Drawer.Trigger>
-        <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
-          <Drawer.Content
-            className="fixed bottom-20  outline-none w-screen "
-            style={
-              {
-                "--initial-transform": "calc(100% + 8px)",
-              } as React.CSSProperties
-            }
-          >
-            <div className="flex flex-col p-4 w-full items-center justify-center rounded-[16px]">
-              <div className="max-w-[500px] rounded-xl backdrop-blur-[1px]  w-full  p-4 border">
-                <Login />
+      <div className="grid place-content-center   h-[50vh] w-screen">
+        <div className="flex flex-col items-center  p-2  space-y-4">
+          <h1 className="font-bold text-2xl">Create an Account</h1>
+          <p>Save your data and compete in the Leaderboard!</p>
+        </div>
+        <Drawer.Root modal={false} open={true}>
+          <Drawer.Trigger className="relative flex px-3"></Drawer.Trigger>
+          <Drawer.Portal>
+            <Drawer.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
+            <Drawer.Content
+              className="fixed bottom-20  outline-none w-screen "
+              style={
+                {
+                  "--initial-transform": "calc(100% + 8px)",
+                } as React.CSSProperties
+              }
+            >
+              <div className="flex flex-col p-4 w-full items-center justify-center rounded-[16px]">
+                <div className="max-w-[500px] rounded-xl backdrop-blur-[1px]  w-full  p-4 border">
+                  <Login />
+                </div>
               </div>
-            </div>
-          </Drawer.Content>
-        </Drawer.Portal>
-      </Drawer.Root></div>
+            </Drawer.Content>
+          </Drawer.Portal>
+        </Drawer.Root>
+      </div>
     );
   }
 
@@ -77,13 +81,13 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="flex flex-col items-center w-full p-4 text-lg">
-      <div className="w-full max-w-4xl p-4 flex-col flex rounded-xl  space-y-4">
-        <h1 className="font-bold text-2xl">Account</h1>
+    <div className="grid min-w-screen place-content-center">
+      <div className="w-screen items-center p-4 flex-col flex space-y-4">
+        <h1 className="font-bold text-2xl text-left">Account</h1>
         <UserCard user={user} />
         <Link
           className="flex items-center text-sm text-primary/50 underline"
-          href={`/profile/${user._id}`}
+          href={`/profile/${user.username}`}
         >
           View Public Profile <ChevronRight />
         </Link>

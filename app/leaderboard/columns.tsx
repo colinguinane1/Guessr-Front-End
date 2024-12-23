@@ -6,7 +6,6 @@ import Link from "next/link";
 import { ExternalLink, ExternalLinkIcon } from "lucide-react";
 import { levels } from "@/types/levels";
 
-
 // export interface User {
 //   _id: string;
 //   email: string;
@@ -43,7 +42,7 @@ export const user_columns: ColumnDef<User>[] = [
     cell: ({ row }) => (
       <Link
         className="flex gap-2 hover:underline items-center"
-        href={`/profile/${row.original._id}`}
+        href={`/profile/${row.original.username}`}
       >
         {row.original.username} <ExternalLinkIcon size={12} />
       </Link>

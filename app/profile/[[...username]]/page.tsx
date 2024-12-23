@@ -8,16 +8,20 @@ import { useUser } from "@/context/UserContext";
 import UserCard from "@/components/UserCard";
 import { EyeIcon } from "lucide-react";
 
-export default function Page({ params }: { params: Promise<{ id: string }> }) {
+export default function Page({
+  params,
+}: {
+  params: Promise<{ username: string }>;
+}) {
   const resolvedParams = use(params);
   const { user } = useUser();
-  const { id } = resolvedParams;
+  const { username } = resolvedParams;
   const [profile, setProfile] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserById = async (id: string) => {
-      const response = await api.get(`/api/auth/profile/${id}`);
+      const response = await api.get(`/api/auth/profile/${username}`);
       if (!response.data) {
         console.error("No user data in response");
         return;
@@ -27,8 +31,8 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       setLoading(false);
     };
 
-    if (id) {
-      fetchUserById(id);
+    if (username) {
+      fetchUserById(username);
     }
     const addProfileView = async (id: string) => {
       const response = await api.post(`/api/auth/profile/${id}`, { user });
@@ -38,7 +42,7 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
       }
       console.log(profile?.profile_views);
     };
-    addProfileView(id);
+    addProfileView(username);
   }, []);
 
   const formatDate = (isoString: string) => {
@@ -67,36 +71,37 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
   return (
     <div className="flex flex-col items-center w-full p-4 text-lg">
       <div className="w-full max-w-4xl p-4 rounded-xl gap-4 space-y-4">
-        <h1 className="font-bold text-2xl">{profile?.username}&apos;s profile</h1>
-      <UserCard user={profile} />
-      <p className="flex items-center gap-1">
-        {profile?.profile_views} <EyeIcon size={15} /> views
-      </p>
+        <h1 className="font-bold text-2xl">
+          {profile?.username}&apos;s profile
+        </h1>
+        <UserCard user={profile} />
+        <p className="flex items-center gap-1">
+          {profile?.profile_views} <EyeIcon size={15} /> views
+        </p>
+        {(cutGuessedNumbers?.length ?? 0) > 0 ? (
+          <div className="flex bg-card w-full max-w-2xl p-4 rounded-xl border flex-col gap-2">
+            {" "}
+            <p>{cutGuessedNumbers?.length} guessed numbers</p>
+            {cutGuessedNumbers?.map((number) => (
+              <div
+                key={number._id}
+                className="flex items-center justify-between w-full gap-2"
+              >
+                <div className="flex items-center gap-2">
+                  <p className="capitalize">{number.difficulty}</p>
+                  <p>{number.value}</p>
+                </div>
 
-      {(cutGuessedNumbers?.length ?? 0) > 0 ? (
-        <div className="flex bg-card w-full max-w-2xl p-4 rounded-xl border flex-col gap-2">
-          {" "}
-          <p>{cutGuessedNumbers?.length} guessed numbers</p>
-          {cutGuessedNumbers?.map((number) => (
-            <div
-              key={number._id}
-              className="flex items-center justify-between w-full gap-2"
-            >
-              <div className="flex items-center gap-2">
-                <p className="capitalize">{number.difficulty}</p>
-                <p>{number.value}</p>
+                <div>
+                  <p>{formatDate(number.created)}</p>
+                </div>
               </div>
-
-              <div>
-                <p>{formatDate(number.created)}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>No guessed numbers</p>
-      )}
+            ))}
+          </div>
+        ) : (
+          <p>No guessed numbers</p>
+        )}
+      </div>
     </div>
-  </div>
   );
 }
