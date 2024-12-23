@@ -69,8 +69,8 @@ export default function Page({
   }
 
   return (
-    <div className="flex flex-col items-center w-full p-4 text-lg">
-      <div className="w-full max-w-4xl p-4 rounded-xl gap-4 space-y-4">
+    <div className="grid place-content-center w-screen  p-4 text-lg">
+      <div className="w-screen max-w-4xl p-4 rounded-xl gap-4 justify-center flex flex-col items-center   space-y-4">
         <h1 className="font-bold text-2xl">
           {profile?.username}&apos;s profile
         </h1>

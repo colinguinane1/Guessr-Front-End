@@ -88,6 +88,16 @@ interface UserCardProps {
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
   const [levelProgress, setLevelProgress] = useState(0);
+  useEffect(() => {
+    if (user) {
+      setInterval(() => {
+        setLevelProgress(
+          ((currentLevelThreshold - xpTilNextLevel) / currentLevelThreshold) *
+            100
+        );
+      }, 100);
+    }
+  });
   if (!user) {
     return (
       <div className="flex items-center bg-card border p-4 rounded-xl gap-4">
@@ -102,17 +112,6 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
 
   const currentLevelThreshold =
     getNextLevelThreshold(user.xp) - getLastLevelThreshold(user.xp);
-
-  useEffect(() => {
-    if (user) {
-      setInterval(() => {
-        setLevelProgress(
-          ((currentLevelThreshold - xpTilNextLevel) / currentLevelThreshold) *
-            100
-        );
-      }, 100);
-    }
-  });
 
   return (
     <Link
