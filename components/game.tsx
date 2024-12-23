@@ -32,25 +32,14 @@ export default function Game() {
         const response = await api.get(`/api/numbers/current`);
         if (!response.data) {
           console.error("Failed to fetch current numbers");
+          return; // Exit early if no data is found
         }
         const data = response.data;
+        console.log("Fetched Data:", data); // Log the data
         const sortedData = data.sort(
           (a: Difficulty, b: Difficulty) => a.max - b.max
         );
-        if (sortedData.length > 0) {
-          setData(sortedData);
-        } else {
-          console.error("No data available");
-        }
-        const numberCreated = data[0].created;
-        const storedDate = localStorage.getItem("NumberDate");
-        if (!storedDate) {
-          console.log("No stored number date.");
-        }
-        if (storedDate !== numberCreated) {
-          clearLocalStorage();
-          localStorage.setItem("NumberDate", numberCreated);
-        }
+        setData(sortedData);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -63,6 +52,9 @@ export default function Game() {
 
   useEffect(() => {
     console.log("Data:", data);
+    if (!selectedDifficulty) {
+      return;
+    }
     const expiresDate = new Date(selectedDifficulty.expires);
     const target = expiresDate.getTime();
     const interval = setInterval(() => {
