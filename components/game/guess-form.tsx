@@ -10,6 +10,7 @@ import api from "@/utils/axios";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import ScreenKeyboard from "./screen-keyboard";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 
 interface GuessFormProps {
   data: Difficulty[];
@@ -29,6 +30,7 @@ const GuessForm = ({
   modeWin,
 }: GuessFormProps) => {
   const [guess, setGuess] = useState("");
+  const [modeGuesses, setModeGuesses] = useState<string[]>([]);
   const [result, setResult] = useState("Submit");
   const [error, setError] = useState("");
   const [screenKeyboard, setScreenKeyboard] = useState(false);
@@ -108,31 +110,49 @@ const GuessForm = ({
     }
   };
 
-  const addAttempt = async () => {
+  const addAttempt = async (guess: string) => {
     const storedAttempts = localStorage.getItem(currentMode);
     const parseAttempts = storedAttempts
       ? JSON.parse(storedAttempts)
-      : { attempts: 0, completed: false };
+      : { attempts: 0, win: false, guesses: [] };
     parseAttempts.attempts++;
+    parseAttempts.guesses.push(guess);
     localStorage.setItem(currentMode, JSON.stringify(parseAttempts));
+    setModeGuesses((prevModeGuesses) => [...prevModeGuesses, guess]);
     setCurrentAttempts((prevAttempts) => prevAttempts - 1);
     const res = await api.post("/api/numbers/add-guess", {
       numberId: selectedDifficulty._id,
       userId: user?._id,
       mode: currentMode,
+      guess: guess,
     });
     console.log(res);
   };
 
+
+  const getGuesses = () => {
+    if (user) {
+      console.log("User data:", user.current_number_data);
+      const currentData = new Map(Object.entries(user.current_number_data));
+      const attemptsData = currentData.get(currentMode);
+      console.log("User guesses for mode:", attemptsData?.guesses);
+      return Array.isArray(attemptsData?.guesses) ? attemptsData.guesses : [];
+    }
+    const storedGuesses = localStorage.getItem(currentMode);
+  
+    const parseGuesses = storedGuesses ? JSON.parse(storedGuesses) : [];  
+    console.log("Stored guesses for mode:", parseGuesses.guesses);
+    return Array.isArray(parseGuesses.guesses) ? parseGuesses.guesses : [];
+  };
+
   useEffect(() => {
-    const win = checkWin();
+    const win = checkWin();    
+    const modeGuesses = getGuesses();
+    const attempts = getAttempts();
     setModeWin(win);
     setResult("Submit");
     setGuess("");
-
-    const attempts = getAttempts();
-    console.log(attempts + "here");
-
+    setModeGuesses(modeGuesses);
     setCurrentAttempts(selectedDifficulty?.attempts - attempts);
   }, [currentMode, selectedDifficulty]);
 
@@ -165,13 +185,15 @@ const GuessForm = ({
       addWin();
     } else if (value > parseInt(guess)) {
       setResult("Higher...");
-      addAttempt();
+      addAttempt(guess);
     } else {
       setResult("Lower...");
-      addAttempt();
+      addAttempt(guess);
     }
     setGuess("");
   };
+
+  const lastGuessedNumber = modeGuesses[modeGuesses.length - 1];
   return (
     <div className="flex items-center w-full justify-center">
       {currentAttempts <= 0 ? (
@@ -183,7 +205,9 @@ const GuessForm = ({
         <form
           onSubmit={handleSubmit(guess)}
           className="flex items-center z-10 w-full justify-center flex-col gap-2"
-        >
+        > {modeGuesses.length > 0 &&
+        <Accordion className="w-full" type="single" collapsible><AccordionItem value="guesses"><AccordionTrigger>Guesses: {lastGuessedNumber}</AccordionTrigger><AccordionContent>{modeGuesses.map((guess, idx) => (<li key={idx}>{guess}</li>))}</AccordionContent></AccordionItem></Accordion>}
+  
           <div className="flex items-center gap-2 w-full">
             <Input
               className={`bg-transparent border p-4 w-full outline-none  font-extrabold tracking-tighter`}
