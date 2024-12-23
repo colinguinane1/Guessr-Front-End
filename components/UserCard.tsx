@@ -87,6 +87,7 @@ interface UserCardProps {
 }
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
+  const [levelProgress, setLevelProgress] = useState(0);
   if (!user) {
     return (
       <div className="flex items-center bg-card border p-4 rounded-xl gap-4">
@@ -94,8 +95,6 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
       </div>
     );
   }
-
-  const [levelProgress, setLevelProgress] = useState(0);
   const playerLevel = getLevelByXP(user.xp); // Get the player's current level
   const nextLevel = getNextLevelByXP(user.xp); // Get the next level number
   const xpTilNextLevel = getXpTilNextLevel(user.xp); // Get XP required to next level
