@@ -1,4 +1,4 @@
-import { SkullIcon } from "lucide-react";
+import { Check, SkullIcon } from "lucide-react";
 import { Input } from "../ui/input";
 import { KeyboardIcon } from "lucide-react";
 import { ArrowLeftFromLine } from "lucide-react";
@@ -80,13 +80,15 @@ const GuessForm = ({
     return false;
   };
 
-  const addWin = async () => {
+  const addWin = async (guess: string) => {
     const attempts = getAttempts();
     const storedWins = localStorage.getItem(currentMode);
     const parseWins = storedWins
       ? JSON.parse(storedWins)
-      : { attempts: attempts, completed: true };
+      : { attempts: attempts, completed: true, guesses: []};
     parseWins.completed = true;
+    parseWins.guesses.push(guess);
+    setModeGuesses((prevModeGuesses) => [...prevModeGuesses, guess]);
     setModeWin(true);
     localStorage.setItem(currentMode, JSON.stringify(parseWins));
     if (user) {
@@ -95,6 +97,7 @@ const GuessForm = ({
           numberId: selectedDifficulty._id,
           user: user,
           mode: currentMode,
+          guess: guess,
         });
         const addedXp = res.data.xp;
         toast.success(`You have gained ${addedXp} XP!`);
@@ -182,7 +185,7 @@ const GuessForm = ({
       return;
     } else if (value === parseInt(guess)) {
       setResult("Correct!");
-      addWin();
+      addWin(guess);
     } else if (value > parseInt(guess)) {
       setResult("Higher...");
       addAttempt(guess);
@@ -206,8 +209,17 @@ const GuessForm = ({
           onSubmit={handleSubmit(guess)}
           className="flex items-center z-10 w-full justify-center flex-col gap-2"
         > {modeGuesses.length > 0 &&
-        <Accordion className="w-full" type="single" collapsible><AccordionItem value="guesses"><AccordionTrigger>Guesses: {lastGuessedNumber}</AccordionTrigger><AccordionContent>{modeGuesses.map((guess, idx) => (<li key={idx}>{guess}</li>))}</AccordionContent></AccordionItem></Accordion>}
-  
+        <Accordion className="w-full" type="single" collapsible>
+          <AccordionItem value="guesses">
+            <AccordionTrigger>Last Guess: {lastGuessedNumber}</AccordionTrigger>
+            <AccordionContent>
+
+              {modeGuesses.map((guess, idx) => 
+                (<li className={` ${Number(guess) === selectedDifficulty.value && "text-green-500 list-none flex items-center gap-1 -ml-[2px]"}`} key={idx}>  {Number(guess) === selectedDifficulty.value &&<Check className="flex" size={15} />}{guess}</li>))}
+                </AccordionContent>
+                </AccordionItem>
+                </Accordion>}
+   
           <div className="flex items-center gap-2 w-full">
             <Input
               className={`bg-transparent border p-4 w-full outline-none  font-extrabold tracking-tighter`}
