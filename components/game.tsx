@@ -35,7 +35,7 @@ export default function Game() {
           return; // Exit early if no data is found
         }
         const data = response.data;
-        console.log("Fetched Data:", data); // Log the data
+        // console.log("Fetched Data:", data); // Log the data
         const sortedData = data.sort(
           (a: Difficulty, b: Difficulty) => a.max - b.max
         );
@@ -51,7 +51,7 @@ export default function Game() {
   }, []);
 
   useEffect(() => {
-    console.log("Data:", data);
+    // console.log("Data:", data);
     if (!selectedDifficulty) {
       return;
     }

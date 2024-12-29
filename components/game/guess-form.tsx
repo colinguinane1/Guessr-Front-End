@@ -10,7 +10,12 @@ import api from "@/utils/axios";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import ScreenKeyboard from "./screen-keyboard";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
 
 interface GuessFormProps {
   data: Difficulty[];
@@ -85,7 +90,7 @@ const GuessForm = ({
     const storedWins = localStorage.getItem(currentMode);
     const parseWins = storedWins
       ? JSON.parse(storedWins)
-      : { attempts: attempts, completed: true, guesses: []};
+      : { attempts: attempts, completed: true, guesses: [] };
     parseWins.completed = true;
     parseWins.guesses.push(guess);
     setModeGuesses((prevModeGuesses) => [...prevModeGuesses, guess]);
@@ -129,27 +134,26 @@ const GuessForm = ({
       mode: currentMode,
       guess: guess,
     });
-    console.log(res);
+    // console.log(res);
   };
-
 
   const getGuesses = () => {
     if (user) {
-      console.log("User data:", user.current_number_data);
+      // console.log("User data:", user.current_number_data);
       const currentData = new Map(Object.entries(user.current_number_data));
       const attemptsData = currentData.get(currentMode);
-      console.log("User guesses for mode:", attemptsData?.guesses);
+      // console.log("User guesses for mode:", attemptsData?.guesses);
       return Array.isArray(attemptsData?.guesses) ? attemptsData.guesses : [];
     }
     const storedGuesses = localStorage.getItem(currentMode);
-  
-    const parseGuesses = storedGuesses ? JSON.parse(storedGuesses) : [];  
-    console.log("Stored guesses for mode:", parseGuesses.guesses);
+
+    const parseGuesses = storedGuesses ? JSON.parse(storedGuesses) : [];
+    // console.log("Stored guesses for mode:", parseGuesses.guesses);
     return Array.isArray(parseGuesses.guesses) ? parseGuesses.guesses : [];
   };
 
   useEffect(() => {
-    const win = checkWin();    
+    const win = checkWin();
     const modeGuesses = getGuesses();
     const attempts = getAttempts();
     setModeWin(win);
@@ -208,18 +212,34 @@ const GuessForm = ({
         <form
           onSubmit={handleSubmit(guess)}
           className="flex items-center z-10 w-full justify-center flex-col gap-2"
-        > {modeGuesses.length > 0 &&
-        <Accordion className="w-full" type="single" collapsible>
-          <AccordionItem value="guesses">
-            <AccordionTrigger>Last Guess: {lastGuessedNumber}</AccordionTrigger>
-            <AccordionContent>
-
-              {modeGuesses.map((guess, idx) => 
-                (<li className={` ${Number(guess) === selectedDifficulty.value && "text-green-500 list-none flex items-center gap-1 -ml-[2px]"}`} key={idx}>  {Number(guess) === selectedDifficulty.value &&<Check className="flex" size={15} />}{guess}</li>))}
+        >
+          {" "}
+          {modeGuesses.length > 0 && (
+            <Accordion className="w-full" type="single" collapsible>
+              <AccordionItem value="guesses">
+                <AccordionTrigger>
+                  Last Guess: {lastGuessedNumber}
+                </AccordionTrigger>
+                <AccordionContent>
+                  {modeGuesses.map((guess, idx) => (
+                    <li
+                      className={` ${
+                        Number(guess) === selectedDifficulty.value &&
+                        "text-green-500 list-none flex items-center gap-1 -ml-[2px]"
+                      }`}
+                      key={idx}
+                    >
+                      {" "}
+                      {Number(guess) === selectedDifficulty.value && (
+                        <Check className="flex" size={15} />
+                      )}
+                      {guess}
+                    </li>
+                  ))}
                 </AccordionContent>
-                </AccordionItem>
-                </Accordion>}
-   
+              </AccordionItem>
+            </Accordion>
+          )}
           <div className="flex items-center gap-2 w-full">
             <Input
               className={`bg-transparent border p-4 w-full outline-none  font-extrabold tracking-tighter`}

@@ -34,7 +34,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const fetchUserData = async (token: string) => {
     try {
-      console.log("Fetching user data with token:", token);
+      // console.log("Fetching user data with token:", token);
       const response = await api.get("/api/auth/user", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         console.error("No user data in response");
         return;
       }
-      console.log("Received user data:", response.data);
+      // console.log("Received user data:", response.data);
       setUser(response.data);
     } catch (error) {
       console.error("Error fetching user data:", error);
