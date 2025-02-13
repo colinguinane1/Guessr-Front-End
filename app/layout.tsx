@@ -36,7 +36,7 @@ export default function RootLayout({
             className={`${geistSans.variable} ${geistMono.variable} antialiased font-[family-name:var(--font-geist-sans)] transition-colors duration-300`}
           >
             <Toaster position="top-center" richColors closeButton />
-            {/* <BackgroundGrid /> */}
+           <BackgroundGrid />
             <Header />
             <div className="">{children}</div>
           </body>
